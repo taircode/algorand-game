@@ -1,11 +1,11 @@
 from pyteal import *
 
-def play_tic_tac_toe(invited_guest):
+def play_tic_tac_toe():
 
     handle_creation = Seq(
         App.globalPut(Bytes("creator"), Txn.sender()), #creator will be O's
-        App.globalPut(Bytes("guest"), Addr(invited_guest)), #invited_guest will be X's
-        App.globalPut(Bytes("whose_turn"), Addr(invited_guest)), #invited_guest will go first
+        App.globalPut(Bytes("guest"), Txn.application_args[0]), #invited_guest will be X's
+        App.globalPut(Bytes("whose_turn"), Txn.application_args[0]), #invited_guest will go first
         App.globalPut(Bytes("N"), Int(0)), # write a byte slice
         App.globalPut(Bytes("E"), Int(0)), # write a byte slice
         App.globalPut(Bytes("S"), Int(0)), # write a byte slice
@@ -31,21 +31,34 @@ def play_tic_tac_toe(invited_guest):
     #payout some money or something.
     declare_winner = Return(Int(1))
 
+    #return an even split of the money
+    no_winner = Return(Int(1))
+
+    #need to implement a check to see if someone won
+    #check_if_winner = 
+
     handle_noop = Seq(
         Assert(Global.group_size() == Int(1)), #fail if transaction is grouped with any others
         Assert(App.globalGet(Bytes("whose_turne"))==Txn.sender()), #fail if transaction is sent by someone other than whose turn it is
-        Cond(#note if you try to go in a location that's already marked, the transaction will fail
-            [Txn.application_args[0] == Bytes("N"), If(App.globalGet(Bytes("N"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))],
-            [Txn.application_args[0] == Bytes("E"), If(App.globalGet(Bytes("E"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))],
-            [Txn.application_args[0] == Bytes("S"), If(App.globalGet(Bytes("S"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))],
-            [Txn.application_args[0] == Bytes("W"), If(App.globalGet(Bytes("W"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))],
-            [Txn.application_args[0] == Bytes("NE"), If(App.globalGet(Bytes("NE"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))],
-            [Txn.application_args[0] == Bytes("SE"), If(App.globalGet(Bytes("SE"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))],
-            [Txn.application_args[0] == Bytes("SW"), If(App.globalGet(Bytes("SW"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))],
-            [Txn.application_args[0] == Bytes("NW"), If(App.globalGet(Bytes("NW"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))],
-            [Txn.application_args[0] == Bytes("C"), If(App.globalGet(Bytes("C"))==Int(0), If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Bytes("N"),Bytes("X")),App.globalPut(Bytes("N"),Bytes("O"))),Return(Int(0)))]            
+        Assert(#fail if you provide something that is not a valid direction
+            Or(
+            Txn.application_args[0]==Bytes("N"),
+            Txn.application_args[0]==Bytes("E"),
+            Txn.application_args[0]==Bytes("S"),
+            Txn.application_args[0]==Bytes("W"),
+            Txn.application_args[0]==Bytes("NE"),
+            Txn.application_args[0]==Bytes("SE"),
+            Txn.application_args[0]==Bytes("SW"),
+            Txn.application_args[0]==Bytes("NW"),
+            Txn.application_args[0]==Bytes("C"),
+            )
         ),
-        If(Or(
+        Assert(App.globalGet(Txn.application_args[0])==Int(0)), #fail if the location you are trying to mark has already been marked
+        #mark the squre X if guest, O if creator
+        If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Txn.application_args[0],Bytes("X")),App.globalPut(Txn.application_args[0],Bytes("O"))),
+        #you should check if someone got three in a row
+        #check_if_winner, if so, declare_winner
+        If(Or(#check to see if board is full
             App.globalGet(Bytes("N"))==Int(0),
             App.globalGet(Bytes("E"))==Int(0),
             App.globalGet(Bytes("S"))==Int(0),
@@ -55,7 +68,7 @@ def play_tic_tac_toe(invited_guest):
             App.globalGet(Bytes("SW"))==Int(0),
             App.globalGet(Bytes("NW"))==Int(0),
             App.globalGet(Bytes("C"))==Int(0)
-        ),flip_whose_turn,declare_winner),
+        ),flip_whose_turn,no_winner),
         Return(Int(1))
     )
 
@@ -69,8 +82,6 @@ def play_tic_tac_toe(invited_guest):
     )
     
 if __name__ == "__main__":
-    program = play_tic_tac_toe(
-        "ZZAF5ARA4MEC5PVDOP64JM5O5MQST63Q2KOY2FLYFLXXD3PFSNJJBYAFZM"
-    )
+    program = play_tic_tac_toe()
     print(compileTeal(program, mode=Mode.Application, version=3))
 
