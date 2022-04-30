@@ -29,10 +29,10 @@ def format_state(state):
         formatted_key = base64.b64decode(key).decode('utf-8')
         if value['type'] == 1:
             # byte string
-            if formatted_key == 'voted':
-                formatted_value = base64.b64decode(value['bytes']).decode('utf-8')
-            else:
+            if formatted_key == 'guest' or formatted_key == 'whose_turn' or formatted_key == 'creator':
                 formatted_value = value['bytes']
+            else:
+                formatted_value = base64.b64decode(value['bytes']).decode('utf-8')
             formatted[formatted_key] = formatted_value
         else:
             # integer
@@ -60,8 +60,10 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
     # get node suggested parameters
     params = client.suggested_params()
 
+    app_args=["ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI"]
+
     # create unsigned transaction
-    txn = transaction.ApplicationCreateTxn(sender, params, on_complete, approval_program, clear_program, global_schema, local_schema)
+    txn = transaction.ApplicationCreateTxn(sender, params, on_complete, approval_program, clear_program, global_schema, local_schema, app_args)
 
     # sign transaction
     signed_txn = txn.sign(private_key)
@@ -153,5 +155,8 @@ if __name__=='__main__':
     global_state=read_global_state(algod_client, app_id)
     print("Global state:", global_state)
     with open("./deployed/application"+str(app_id)+".txt","a") as f:
-        f.write("Global state: "+global_state)
+        f.write("\n")
+        f.write("Global state\n")
+        lines=[str(item)+": "+str(val)+"\n" for item, val in global_state.items()]
+        f.writelines(lines)
     

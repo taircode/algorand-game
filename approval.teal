@@ -175,10 +175,10 @@ byte "creator"
 txn Sender
 app_global_put
 byte "guest"
-addr ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI
+txna ApplicationArgs 0
 app_global_put
 byte "whose_turn"
-addr ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI
+txna ApplicationArgs 0
 app_global_put
 byte "N"
 byte "empty"

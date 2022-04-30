@@ -1,0 +1,5 @@
+TXID: VY7ON5MKHYA2M7UM2A3U3I6FZVFOLO3ZJ4DD5BDZEAEGMCIBILHA
+Result confirmed in round: 21299579
+app-id: 86877643
+Global state:
+SESWCNNWNEWguestcreatorEwhose_turnS
