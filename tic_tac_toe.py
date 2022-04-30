@@ -20,6 +20,7 @@ def play_tic_tac_toe():
         App.globalPut(Bytes("SW"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("NW"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("C"), Bytes("empty")), # write a byte slice
+        App.globalPut(Bytes("Winner", Bytes("pending"))), # write a byte slice
         Return(Int(1)) # Could also be Approve()
     )
 
@@ -33,16 +34,53 @@ def play_tic_tac_toe():
 
     flip_whose_turn = If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("creator")),App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("guest"))),App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("creator"))))
 
-    #payout some money or something.
-    declare_winner = Return(Int(1))
-    #clear board to play again
-
     #return an even split of the money
     no_winner = Return(Int(1))
-    #clear board to play again
+    #clear board to play again -or- just delete?
 
-    #need to implement a check to see if someone won
-    #check_if_winner = 
+    #check to see if someone won
+    #there's probably a quicker way to do this using the location of the most recent move, but this works too
+    check_if_winner = Or(
+        And(App.globalGet(Bytes("NW"))==Bytes("X"),App.globalGet(Bytes("W"))==Bytes("X"),App.globalGet(Bytes("SW"))==Bytes("X")),
+        And(App.globalGet(Bytes("N"))==Bytes("X"),App.globalGet(Bytes("C"))==Bytes("X"),App.globalGet(Bytes("S"))==Bytes("X")),
+        And(App.globalGet(Bytes("NE"))==Bytes("X"),App.globalGet(Bytes("E"))==Bytes("X"),App.globalGet(Bytes("SE"))==Bytes("X")),
+
+        And(App.globalGet(Bytes("NW"))==Bytes("X"),App.globalGet(Bytes("N"))==Bytes("X"),App.globalGet(Bytes("NE"))==Bytes("X")),
+        And(App.globalGet(Bytes("W"))==Bytes("X"),App.globalGet(Bytes("C"))==Bytes("X"),App.globalGet(Bytes("E"))==Bytes("X")),
+        And(App.globalGet(Bytes("SW"))==Bytes("X"),App.globalGet(Bytes("S"))==Bytes("X"),App.globalGet(Bytes("SE"))==Bytes("X")),
+
+        And(App.globalGet(Bytes("NW"))==Bytes("X"),App.globalGet(Bytes("C"))==Bytes("X"),App.globalGet(Bytes("SE"))==Bytes("X")),
+        And(App.globalGet(Bytes("SW"))==Bytes("X"),App.globalGet(Bytes("S"))==Bytes("X"),App.globalGet(Bytes("NE"))==Bytes("X")),
+
+        And(App.globalGet(Bytes("NW"))==Bytes("O"),App.globalGet(Bytes("W"))==Bytes("O"),App.globalGet(Bytes("SW"))==Bytes("O")),
+        And(App.globalGet(Bytes("N"))==Bytes("O"),App.globalGet(Bytes("C"))==Bytes("O"),App.globalGet(Bytes("S"))==Bytes("O")),
+        And(App.globalGet(Bytes("NE"))==Bytes("O"),App.globalGet(Bytes("E"))==Bytes("O"),App.globalGet(Bytes("SE"))==Bytes("O")),
+
+        And(App.globalGet(Bytes("NW"))==Bytes("O"),App.globalGet(Bytes("N"))==Bytes("O"),App.globalGet(Bytes("NE"))==Bytes("O")),
+        And(App.globalGet(Bytes("W"))==Bytes("O"),App.globalGet(Bytes("C"))==Bytes("O"),App.globalGet(Bytes("E"))==Bytes("O")),
+        And(App.globalGet(Bytes("SW"))==Bytes("O"),App.globalGet(Bytes("S"))==Bytes("O"),App.globalGet(Bytes("SE"))==Bytes("O")),
+
+        And(App.globalGet(Bytes("NW"))==Bytes("O"),App.globalGet(Bytes("C"))==Bytes("O"),App.globalGet(Bytes("SE"))==Bytes("O")),
+        And(App.globalGet(Bytes("SW"))==Bytes("O"),App.globalGet(Bytes("S"))==Bytes("O"),App.globalGet(Bytes("NE"))==Bytes("O")),
+    )
+
+    #payout some money or something.
+    #clear board to play again -or- delete app
+    declare_winner = If(Or(
+        And(App.globalGet(Bytes("NW"))==Bytes("X"),App.globalGet(Bytes("W"))==Bytes("X"),App.globalGet(Bytes("SW"))==Bytes("X")),
+        And(App.globalGet(Bytes("N"))==Bytes("X"),App.globalGet(Bytes("C"))==Bytes("X"),App.globalGet(Bytes("S"))==Bytes("X")),
+        And(App.globalGet(Bytes("NE"))==Bytes("X"),App.globalGet(Bytes("E"))==Bytes("X"),App.globalGet(Bytes("SE"))==Bytes("X")),
+
+        And(App.globalGet(Bytes("NW"))==Bytes("X"),App.globalGet(Bytes("N"))==Bytes("X"),App.globalGet(Bytes("NE"))==Bytes("X")),
+        And(App.globalGet(Bytes("W"))==Bytes("X"),App.globalGet(Bytes("C"))==Bytes("X"),App.globalGet(Bytes("E"))==Bytes("X")),
+        And(App.globalGet(Bytes("SW"))==Bytes("X"),App.globalGet(Bytes("S"))==Bytes("X"),App.globalGet(Bytes("SE"))==Bytes("X")),
+
+        And(App.globalGet(Bytes("NW"))==Bytes("X"),App.globalGet(Bytes("C"))==Bytes("X"),App.globalGet(Bytes("SE"))==Bytes("X")),
+        And(App.globalGet(Bytes("SW"))==Bytes("X"),App.globalGet(Bytes("S"))==Bytes("X"),App.globalGet(Bytes("NE"))==Bytes("X"))
+        ),
+        App.globalPut(Bytes("winner"),App.globalGet(Bytes("guest"))),
+        App.globalPut(Bytes("winner"),App.globalGet(Bytes("creator")))
+    )
 
     handle_noop = Seq(
         Assert(Global.group_size() == Int(1)), #fail if transaction is grouped with any others
@@ -65,17 +103,19 @@ def play_tic_tac_toe():
         If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("guest")),App.globalPut(Txn.application_args[0],Bytes("X")),App.globalPut(Txn.application_args[0],Bytes("O"))),
         #you should check if someone got three in a row
         #check_if_winner, if so, declare_winner
-        If(Or(#check to see if board is full
-            App.globalGet(Bytes("N"))==Bytes("empty"),
-            App.globalGet(Bytes("E"))==Bytes("empty"),
-            App.globalGet(Bytes("S"))==Bytes("empty"),
-            App.globalGet(Bytes("W"))==Bytes("empty"),
-            App.globalGet(Bytes("NE"))==Bytes("empty"),
-            App.globalGet(Bytes("SE"))==Bytes("empty"),
-            App.globalGet(Bytes("SW"))==Bytes("empty"),
-            App.globalGet(Bytes("NW"))==Bytes("empty"),
-            App.globalGet(Bytes("C"))==Bytes("empty")
-        ),flip_whose_turn,no_winner),
+        If(check_if_winner,declare_winner,
+            If(Or(#check to see if board is full
+                App.globalGet(Bytes("N"))==Bytes("empty"),
+                App.globalGet(Bytes("E"))==Bytes("empty"),
+                App.globalGet(Bytes("S"))==Bytes("empty"),
+                App.globalGet(Bytes("W"))==Bytes("empty"),
+                App.globalGet(Bytes("NE"))==Bytes("empty"),
+                App.globalGet(Bytes("SE"))==Bytes("empty"),
+                App.globalGet(Bytes("SW"))==Bytes("empty"),
+                App.globalGet(Bytes("NW"))==Bytes("empty"),
+                App.globalGet(Bytes("C"))==Bytes("empty")
+            ),flip_whose_turn,no_winner)
+        ),
         Return(Int(1))
     )
 
