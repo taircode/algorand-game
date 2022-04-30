@@ -131,7 +131,7 @@ if __name__=='__main__':
     local_ints = 0
     local_bytes = 0
     global_ints = 0 #had to change these to work for our tic-tac-toe example
-    global_bytes = 12 #had to change these to work for our tic-tac-toe example
+    global_bytes = 13 #had to change these to work for our tic-tac-toe example
     global_schema = transaction.StateSchema(global_ints, global_bytes)
     local_schema = transaction.StateSchema(local_ints, local_bytes)
 
