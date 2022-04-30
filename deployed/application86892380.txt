@@ -1,0 +1,17 @@
+TXID: WI5PGBCY2CTCQATGA3EMTGVOXBVSUAHIGIQXH6IHI2PMHTQQG3MQ
+Result confirmed in round: 21301747
+app-id: 86892380
+
+Global state
+NW: empty
+S: empty
+N: empty
+E: empty
+SE: empty
+C: empty
+NE: empty
+guest: test
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+W: empty
+SW: empty
+whose_turn: test

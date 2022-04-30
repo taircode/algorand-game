@@ -3,6 +3,8 @@ from algosdk import account, v2client, mnemonic
 from algosdk.future import transaction #note want algosdk.future.transaction not algosdk.transaction - incorrectly thought it was the second one 
 import tic_tac_toe
 import base64
+from algosdk.encoding import decode_address, encode_address
+
 
 """
 Following the example here https://developer.algorand.org/docs/get-details/dapps/pyteal/ 
@@ -29,7 +31,7 @@ def format_state(state):
         formatted_key = base64.b64decode(key).decode('utf-8')
         if value['type'] == 1:
             # byte string
-            if formatted_key == 'guest' or formatted_key == 'whose_turn' or formatted_key == 'creator':
+            if formatted_key == 'creator' or formatted_key == 'whose_turn' or formatted_key == 'guest':
                 formatted_value = value['bytes']
             else:
                 formatted_value = base64.b64decode(value['bytes']).decode('utf-8')
@@ -60,7 +62,11 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
     # get node suggested parameters
     params = client.suggested_params()
 
-    app_args=["ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI"]
+    #you have to decode the address to get the pk
+    #algorand applications store "addresses" as pk's like this one
+    address="ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI"
+    pk = decode_address(address)
+    app_args=[pk]
 
     # create unsigned transaction
     txn = transaction.ApplicationCreateTxn(sender, params, on_complete, approval_program, clear_program, global_schema, local_schema, app_args)
@@ -152,6 +158,7 @@ if __name__=='__main__':
     app_id = create_app(algod_client, creator_private_key, approval_program_compiled, clear_state_program_compiled, global_schema, local_schema)
     #add app_id to a running list of all apps ever deployed
     with open("./deployed/all_deployed.txt","a") as f:
+        f.write("\n")
         f.write(str(app_id))
 
     # read global state of application

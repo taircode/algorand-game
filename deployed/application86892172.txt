@@ -1,0 +1,17 @@
+TXID: DZTB5QA5CL7WHTYVKF2YJKT6FQTXN4EZ73EPMKEDQTO74LYOVX4Q
+Result confirmed in round: 21301727
+app-id: 86892172
+
+Global state
+NW: empty
+C: empty
+SE: empty
+NE: empty
+E: empty
+W: empty
+whose_turn: dGVzdA==
+S: empty
+SW: empty
+guest: dGVzdA==
+N: empty
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
