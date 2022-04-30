@@ -1,11 +1,13 @@
 from pyteal import *
-from algosdk import account, algod, transaction, mnemonic
+from algosdk import account, v2client, mnemonic
+from algosdk.future import transaction #note want algosdk.future.transaction not algosdk.transaction - incorrectly thought it was the second one 
 import tic_tac_toe
 import base64
 
 """
-Following the example here https://developer.algorand.org/docs/get-details/dapps/pyteal/
+Following the example here https://developer.algorand.org/docs/get-details/dapps/pyteal/ 
 to deploy and call contract
+Note you need to use v2client.algod. instead of just algod.
 """
 
 # helper function to compile program source
@@ -40,7 +42,7 @@ def format_state(state):
 # helper function to read app global state
 def read_global_state(client, app_id):
     app = client.application_info(app_id)
-    app_params = app['params'] #what are all of the params?
+    #app_params = app['params'] #what are all of the params?
     global_state = app['params']['global-state'] if "global-state" in app['params'] else []
     return format_state(global_state)
 
@@ -48,7 +50,7 @@ def read_global_state(client, app_id):
 This is the main function to call in order to deploy the smart contract
 """
 # create new application. This function creates the application creation transaction, signs, and sends it.
-def create_app(client, private_key, approval_program, clear_program, global_schema, local_schema, app_args):
+def create_app(client, private_key, approval_program, clear_program, global_schema, local_schema):
     # define sender as creator
     sender = account.address_from_private_key(private_key)
 
@@ -82,6 +84,13 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
     transaction_response = client.pending_transaction_info(tx_id)
     app_id = transaction_response['application-index']
     print("Created new app-id:", app_id)
+    with open("./deployed/application"+str(app_id)+".txt", "w") as f:
+        f.write("TXID: "+str(tx_id))
+        f.write("\n")
+        f.write("Result confirmed in round: {}".format(transaction_response['confirmed-round']))
+        f.write("\n")
+        f.write("app-id: "+str(app_id))
+        f.write("\n")
 
     return app_id
 
@@ -105,7 +114,7 @@ Main script to create the app on the blockchain and then view its global state
 """
 if __name__=='__main__':
     # initialize an algodClient
-    algod_client = algod.AlgodClient(algod_token, algod_address)
+    algod_client = v2client.algod.AlgodClient(algod_token, algod_address) #want v2client here or do from algosdk.v2client import algod
 
     # define private keys
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic)
@@ -141,4 +150,8 @@ if __name__=='__main__':
     app_id = create_app(algod_client, creator_private_key, approval_program_compiled, clear_state_program_compiled, global_schema, local_schema)
 
     # read global state of application
-    print("Global state:", read_global_state(algod_client, app_id))
+    global_state=read_global_state(algod_client, app_id)
+    print("Global state:", global_state)
+    with open("./deployed/application"+str(app_id)+".txt","a") as f:
+        f.write("Global state: "+global_state)
+    

@@ -46,7 +46,7 @@ def play_tic_tac_toe():
 
     handle_noop = Seq(
         Assert(Global.group_size() == Int(1)), #fail if transaction is grouped with any others
-        Assert(App.globalGet(Bytes("whose_turne"))==Txn.sender()), #fail if transaction is sent by someone other than whose turn it is
+        Assert(App.globalGet(Bytes("whose_turn"))==Txn.sender()), #fail if transaction is sent by someone other than whose turn it is
         Assert(#fail if you provide something that is not a valid direction
             Or(
             Txn.application_args[0]==Bytes("N"),
@@ -90,7 +90,7 @@ def play_tic_tac_toe():
 
 def get_approval_program():
     program = play_tic_tac_toe()
-    return compileTeal(program, mode=Mode.Application, version=3)
+    return compileTeal(program, mode=Mode.Application, version=5)
 
 def get_clear_state_program():
     program = Return(Int(1))
@@ -98,5 +98,5 @@ def get_clear_state_program():
     
 if __name__ == "__main__":
     program = play_tic_tac_toe()
-    print(compileTeal(program, mode=Mode.Application, version=3))
+    print(compileTeal(program, mode=Mode.Application, version=5))
 

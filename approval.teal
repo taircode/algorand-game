@@ -1,0 +1,211 @@
+#pragma version 5
+txn ApplicationID
+int 0
+==
+bnz main_l20
+txn OnCompletion
+int OptIn
+==
+bnz main_l19
+txn OnCompletion
+int CloseOut
+==
+bnz main_l18
+txn OnCompletion
+int UpdateApplication
+==
+bnz main_l17
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l16
+txn OnCompletion
+int NoOp
+==
+bnz main_l7
+err
+main_l7:
+global GroupSize
+int 1
+==
+assert
+byte "whose_turn"
+app_global_get
+txn Sender
+==
+assert
+txna ApplicationArgs 0
+byte "N"
+==
+txna ApplicationArgs 0
+byte "E"
+==
+||
+txna ApplicationArgs 0
+byte "S"
+==
+||
+txna ApplicationArgs 0
+byte "W"
+==
+||
+txna ApplicationArgs 0
+byte "NE"
+==
+||
+txna ApplicationArgs 0
+byte "SE"
+==
+||
+txna ApplicationArgs 0
+byte "SW"
+==
+||
+txna ApplicationArgs 0
+byte "NW"
+==
+||
+txna ApplicationArgs 0
+byte "C"
+==
+||
+assert
+txna ApplicationArgs 0
+app_global_get
+byte "empty"
+==
+assert
+byte "whose_turn"
+app_global_get
+byte "guest"
+app_global_get
+==
+bnz main_l15
+txna ApplicationArgs 0
+byte "O"
+app_global_put
+main_l9:
+byte "N"
+app_global_get
+byte "empty"
+==
+byte "E"
+app_global_get
+byte "empty"
+==
+||
+byte "S"
+app_global_get
+byte "empty"
+==
+||
+byte "W"
+app_global_get
+byte "empty"
+==
+||
+byte "NE"
+app_global_get
+byte "empty"
+==
+||
+byte "SE"
+app_global_get
+byte "empty"
+==
+||
+byte "SW"
+app_global_get
+byte "empty"
+==
+||
+byte "NW"
+app_global_get
+byte "empty"
+==
+||
+byte "C"
+app_global_get
+byte "empty"
+==
+||
+bnz main_l12
+int 1
+return
+main_l11:
+int 1
+return
+main_l12:
+byte "whose_turn"
+app_global_get
+byte "creator"
+app_global_get
+==
+bnz main_l14
+byte "whose_turn"
+byte "creator"
+app_global_get
+app_global_put
+b main_l11
+main_l14:
+byte "whose_turn"
+byte "guest"
+app_global_get
+app_global_put
+b main_l11
+main_l15:
+txna ApplicationArgs 0
+byte "X"
+app_global_put
+b main_l9
+main_l16:
+int 1
+return
+main_l17:
+int 0
+return
+main_l18:
+int 0
+return
+main_l19:
+int 0
+return
+main_l20:
+byte "creator"
+txn Sender
+app_global_put
+byte "guest"
+addr ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI
+app_global_put
+byte "whose_turn"
+addr ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI
+app_global_put
+byte "N"
+byte "empty"
+app_global_put
+byte "E"
+byte "empty"
+app_global_put
+byte "S"
+byte "empty"
+app_global_put
+byte "W"
+byte "empty"
+app_global_put
+byte "NE"
+byte "empty"
+app_global_put
+byte "SE"
+byte "empty"
+app_global_put
+byte "SW"
+byte "empty"
+app_global_put
+byte "NW"
+byte "empty"
+app_global_put
+byte "C"
+byte "empty"
+app_global_put
+int 1
+return
