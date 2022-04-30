@@ -48,7 +48,7 @@ def read_global_state(client, app_id):
 This is the main function to call in order to deploy the smart contract
 """
 # create new application. This function creates the application creation transaction, signs, and sends it.
-def create_app(client, private_key, approval_program, clear_program, global_schema, local_schema):
+def create_app(client, private_key, approval_program, clear_program, global_schema, local_schema, app_args):
     # define sender as creator
     sender = account.address_from_private_key(private_key)
 
@@ -85,11 +85,16 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
 
     return app_id
 
+"""
+After the app is created, this function calls a Noop transaction that specifies who the creator is challenging.
+"""
+def assign_challenger():
+    pass
 
 # user declared account mnemonics
-#you should never save this like this in production
-#figure out a safer way to do this
-creator_mnemonic = "REPLACE WITH YOUR OWN MNEMONIC" 
+#you should never save mnemonic like this in production. Just using on testnet for now.
+#figure out a safer way to do this for mainnet
+creator_mnemonic = "cushion raccoon snap tragic come seat rhythm canal clarify oven pipe misery maid mutual gossip real flat snake witness achieve concert wrestle praise abstract hundred" 
 # user declared algod connection parameters.
 # Node must have EnableDeveloperAPI set to true in its config
 algod_address = "http://localhost:4001"
@@ -98,7 +103,6 @@ algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 """
 Main script to create the app on the blockchain and then view its global state
 """
-
 if __name__=='__main__':
     # initialize an algodClient
     algod_client = algod.AlgodClient(algod_token, algod_address)
