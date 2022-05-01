@@ -1,4 +1,5 @@
 from algosdk import account, v2client, mnemonic
+from algosdk.encoding import decode_address, encode_address
 import base64
 
 # helper function that converts a mnemonic passphrase into a private signing key
@@ -15,10 +16,19 @@ def format_state(state):
         formatted_key = base64.b64decode(key).decode('utf-8')
         if value['type'] == 1:
             # byte string
-            if formatted_key == 'creator' or formatted_key == 'whose_turn' or formatted_key == 'guest':
-                formatted_value = value['bytes']
+            if formatted_key=='winner':
+                decoded_bytes = base64.b64decode(value['bytes'])
+                if decoded_bytes==b'pending':
+                    formatted_value=decoded_bytes.decode('utf-8')
+                else:
+                    #formatted_value is a decoded algorand pk address
+                    formatted_value=encode_address(decoded_bytes)
+            elif formatted_key == 'creator' or formatted_key == 'whose_turn' or formatted_key == 'guest':
+                pk=base64.b64decode(value['bytes'])
+                formatted_value=encode_address(pk)
             else:
-                formatted_value = base64.b64decode(value['bytes']).decode('utf-8')
+                decoded_bytes=base64.b64decode(value['bytes'])
+                formatted_value = decoded_bytes.decode('utf-8')
             formatted[formatted_key] = formatted_value
         else:
             # integer
