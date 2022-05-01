@@ -2,7 +2,7 @@
 from algosdk import v2client
 from helper import read_global_state
 import argparse
-
+from graphics import *
 
 if __name__=="__main__":
 
