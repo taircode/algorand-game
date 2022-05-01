@@ -84,7 +84,7 @@ if __name__=='__main__':
 
     #get the app id from args or from file
     if args.app_id=='latest':
-        with open("./deployed/all_deployed.txt","r") as f:
+        with open("./all_deployed.txt","r") as f:
             for line in f:
                 pass
             app_id=int(line)

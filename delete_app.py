@@ -23,7 +23,7 @@ algod_address = "http://localhost:4001"
 algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 """
-This is the main function to call in order to deploy the smart contract
+This is the main function to call in order to delete the smart contract
 """
 # create new application. This function creates the application creation transaction, signs, and sends it.
 def delete_app(client, private_key, app_id):
