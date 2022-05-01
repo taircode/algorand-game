@@ -126,7 +126,7 @@ if __name__=='__main__':
     # create new application
     app_id = create_app(algod_client, creator_private_key, approval_program_compiled, clear_state_program_compiled, global_schema, local_schema)
     #add app_id to a running list of all apps ever deployed
-    with open("./deployed/all_deployed.txt","a") as f:
+    with open("./all_deployed.txt","a") as f:
         f.write("\n")
         f.write(str(app_id))
 
