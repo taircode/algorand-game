@@ -31,11 +31,20 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
     # get node suggested parameters
     params = client.suggested_params()
 
+    #amount you want to bet
+    bet_amount=3
+    #Integers in algorand are almost always uint64, sometimes its required to encode them as bytes. 
+    #For example when passing them as application arguments in an ApplicationCallTransaction. 
+    #When encoding an integer to pass as an application argument, the integer should be encoded as the big endian 8 byte representation of the integer value.
+    encoded_bet_amount=(bet_amount).to_bytes(8,'big')
+
     #you have to decode the address to get the pk
     #algorand applications store "addresses" as pk's like this one
     address="ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI"
     pk = decode_address(address)
-    app_args=[pk]
+
+    #here are the app_args
+    app_args=[pk,encoded_bet_amount]
 
     # create unsigned transaction
     txn = transaction.ApplicationCreateTxn(sender, params, on_complete, approval_program, clear_program, global_schema, local_schema, app_args)
@@ -71,12 +80,6 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
 
     return app_id
 
-"""
-After the app is created, this function calls a Noop transaction that specifies who the creator is challenging.
-"""
-def assign_challenger():
-    pass
-
 # user declared account mnemonics
 #you should never save mnemonic like this in production. Just using on testnet for now.
 #figure out a safer way to do this for mainnet
@@ -99,7 +102,7 @@ if __name__=='__main__':
     # declare application state storage (immutable)
     local_ints = 0
     local_bytes = 0
-    global_ints = 0 #had to change these to work for our tic-tac-toe example
+    global_ints = 1 #had to change these to work for our tic-tac-toe example
     global_bytes = 13 #had to change these to work for our tic-tac-toe example
     global_schema = transaction.StateSchema(global_ints, global_bytes)
     local_schema = transaction.StateSchema(local_ints, local_bytes)

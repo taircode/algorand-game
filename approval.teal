@@ -2,23 +2,23 @@
 txn ApplicationID
 int 0
 ==
-bnz main_l24
+bnz main_l25
 txn OnCompletion
 int OptIn
 ==
-bnz main_l23
+bnz main_l24
 txn OnCompletion
 int CloseOut
 ==
-bnz main_l22
+bnz main_l23
 txn OnCompletion
 int UpdateApplication
 ==
-bnz main_l21
+bnz main_l22
 txn OnCompletion
 int DeleteApplication
 ==
-bnz main_l20
+bnz main_l21
 txn OnCompletion
 int NoOp
 ==
@@ -80,7 +80,7 @@ app_global_get
 byte "guest"
 app_global_get
 ==
-bnz main_l19
+bnz main_l20
 txna ApplicationArgs 0
 byte "O"
 app_global_put
@@ -513,28 +513,37 @@ byte "X"
 ==
 &&
 ||
-bnz main_l18
+bnz main_l19
 byte "winner"
 byte "creator"
 app_global_get
 app_global_put
-b main_l12
 main_l18:
+itxn_begin
+int pay
+itxn_field TypeEnum
+byte "bet"
+app_global_get
+int 2
+*
+itxn_field Amount
+txn Sender
+itxn_field Receiver
+itxn_submit
+b main_l12
+main_l19:
 byte "winner"
 byte "guest"
 app_global_get
 app_global_put
-b main_l12
-main_l19:
+b main_l18
+main_l20:
 txna ApplicationArgs 0
 byte "X"
 app_global_put
 b main_l9
-main_l20:
-int 1
-return
 main_l21:
-int 0
+int 1
 return
 main_l22:
 int 0
@@ -543,6 +552,9 @@ main_l23:
 int 0
 return
 main_l24:
+int 0
+return
+main_l25:
 byte "creator"
 txn Sender
 app_global_put
@@ -551,6 +563,10 @@ txna ApplicationArgs 0
 app_global_put
 byte "whose_turn"
 txna ApplicationArgs 0
+app_global_put
+byte "bet"
+txna ApplicationArgs 1
+btoi
 app_global_put
 byte "N"
 byte "empty"
