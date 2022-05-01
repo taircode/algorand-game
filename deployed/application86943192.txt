@@ -1,0 +1,93 @@
+TXID: 42RK2C76KJMUZAJN7W2ZUR2ZSSTMF5XZJGEEJQSXNMRGAKBDYF7Q
+Result confirmed in round: 21309017
+app-id: 86943192
+
+Global state
+C: empty
+E: empty
+N: empty
+NW: empty
+S: empty
+NE: empty
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+W: empty
+SE: empty
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+winner: pending
+SW: empty
+whose_turn: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+TXID: VZR4P2VAQPFUYOQDV2BHLSJA73NX4R7FQQB47TKTZS65L7OT67MQ
+Result confirmed in round: 21309022
+app-id: 86943192
+
+Global state
+SW: empty
+NE: empty
+C: empty
+N: empty
+S: empty
+E: empty
+SE: empty
+NW: empty
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+winner: pending
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+W: X
+whose_turn: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+TXID: XAII6GSHNECBUFU4B7CFIIST4VTJHEZYTRLHGEEJKPYIDJTRX7UA
+Result confirmed in round: 21309028
+app-id: 86943192
+
+Global state
+S: empty
+SW: O
+C: empty
+N: empty
+NE: empty
+NW: empty
+W: X
+E: empty
+SE: empty
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+whose_turn: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+winner: pending
+TXID: NPIU47LWQIH6GLOMZ2HXR4E5DPXJETHWC2GTFWUKCYZT4TFR5LDQ
+Result confirmed in round: 21309031
+app-id: 86943192
+
+Global state
+C: X
+N: empty
+SW: O
+E: empty
+NW: empty
+NE: empty
+SE: empty
+S: empty
+whose_turn: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+winner: pending
+W: X
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+TXID: MLXUVFZJMWEQPDD7H5YN4AKFHGTUW5AFK237BQSN3M63NCWVLE2A
+Result confirmed in round: 21309038
+app-id: 86943192
+
+Global state
+N: empty
+E: empty
+C: X
+whose_turn: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+SW: O
+NW: empty
+S: empty
+SE: O
+winner: pending
+W: X
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+NE: empty
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+TXID: Q32XCXUUJDM5YOGRJTOX5Z5EMBKLN66X4X6HCFBVMJXX4YJJMUTQ
+Result confirmed in round: 21309042
+app-id: 86943192

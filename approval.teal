@@ -1,0 +1,586 @@
+#pragma version 5
+txn ApplicationID
+int 0
+==
+bnz main_l24
+txn OnCompletion
+int OptIn
+==
+bnz main_l23
+txn OnCompletion
+int CloseOut
+==
+bnz main_l22
+txn OnCompletion
+int UpdateApplication
+==
+bnz main_l21
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l20
+txn OnCompletion
+int NoOp
+==
+bnz main_l7
+err
+main_l7:
+global GroupSize
+int 1
+==
+assert
+byte "whose_turn"
+app_global_get
+txn Sender
+==
+assert
+txna ApplicationArgs 0
+byte "N"
+==
+txna ApplicationArgs 0
+byte "E"
+==
+||
+txna ApplicationArgs 0
+byte "S"
+==
+||
+txna ApplicationArgs 0
+byte "W"
+==
+||
+txna ApplicationArgs 0
+byte "NE"
+==
+||
+txna ApplicationArgs 0
+byte "SE"
+==
+||
+txna ApplicationArgs 0
+byte "SW"
+==
+||
+txna ApplicationArgs 0
+byte "NW"
+==
+||
+txna ApplicationArgs 0
+byte "C"
+==
+||
+assert
+txna ApplicationArgs 0
+app_global_get
+byte "empty"
+==
+assert
+byte "whose_turn"
+app_global_get
+byte "guest"
+app_global_get
+==
+bnz main_l19
+txna ApplicationArgs 0
+byte "O"
+app_global_put
+main_l9:
+byte "NW"
+app_global_get
+byte "X"
+==
+byte "W"
+app_global_get
+byte "X"
+==
+&&
+byte "SW"
+app_global_get
+byte "X"
+==
+&&
+byte "N"
+app_global_get
+byte "X"
+==
+byte "C"
+app_global_get
+byte "X"
+==
+&&
+byte "S"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "NE"
+app_global_get
+byte "X"
+==
+byte "E"
+app_global_get
+byte "X"
+==
+&&
+byte "SE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "NW"
+app_global_get
+byte "X"
+==
+byte "N"
+app_global_get
+byte "X"
+==
+&&
+byte "NE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "W"
+app_global_get
+byte "X"
+==
+byte "C"
+app_global_get
+byte "X"
+==
+&&
+byte "E"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "SW"
+app_global_get
+byte "X"
+==
+byte "S"
+app_global_get
+byte "X"
+==
+&&
+byte "SE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "NW"
+app_global_get
+byte "X"
+==
+byte "C"
+app_global_get
+byte "X"
+==
+&&
+byte "SE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "SW"
+app_global_get
+byte "X"
+==
+byte "S"
+app_global_get
+byte "X"
+==
+&&
+byte "NE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "NW"
+app_global_get
+byte "O"
+==
+byte "W"
+app_global_get
+byte "O"
+==
+&&
+byte "SW"
+app_global_get
+byte "O"
+==
+&&
+||
+byte "N"
+app_global_get
+byte "O"
+==
+byte "C"
+app_global_get
+byte "O"
+==
+&&
+byte "S"
+app_global_get
+byte "O"
+==
+&&
+||
+byte "NE"
+app_global_get
+byte "O"
+==
+byte "E"
+app_global_get
+byte "O"
+==
+&&
+byte "SE"
+app_global_get
+byte "O"
+==
+&&
+||
+byte "NW"
+app_global_get
+byte "O"
+==
+byte "N"
+app_global_get
+byte "O"
+==
+&&
+byte "NE"
+app_global_get
+byte "O"
+==
+&&
+||
+byte "W"
+app_global_get
+byte "O"
+==
+byte "C"
+app_global_get
+byte "O"
+==
+&&
+byte "E"
+app_global_get
+byte "O"
+==
+&&
+||
+byte "SW"
+app_global_get
+byte "O"
+==
+byte "S"
+app_global_get
+byte "O"
+==
+&&
+byte "SE"
+app_global_get
+byte "O"
+==
+&&
+||
+byte "NW"
+app_global_get
+byte "O"
+==
+byte "C"
+app_global_get
+byte "O"
+==
+&&
+byte "SE"
+app_global_get
+byte "O"
+==
+&&
+||
+byte "SW"
+app_global_get
+byte "O"
+==
+byte "S"
+app_global_get
+byte "O"
+==
+&&
+byte "NE"
+app_global_get
+byte "O"
+==
+&&
+||
+bnz main_l16
+byte "N"
+app_global_get
+byte "empty"
+==
+byte "E"
+app_global_get
+byte "empty"
+==
+||
+byte "S"
+app_global_get
+byte "empty"
+==
+||
+byte "W"
+app_global_get
+byte "empty"
+==
+||
+byte "NE"
+app_global_get
+byte "empty"
+==
+||
+byte "SE"
+app_global_get
+byte "empty"
+==
+||
+byte "SW"
+app_global_get
+byte "empty"
+==
+||
+byte "NW"
+app_global_get
+byte "empty"
+==
+||
+byte "C"
+app_global_get
+byte "empty"
+==
+||
+bnz main_l13
+int 1
+return
+main_l12:
+int 1
+return
+main_l13:
+byte "whose_turn"
+app_global_get
+byte "creator"
+app_global_get
+==
+bnz main_l15
+byte "whose_turn"
+byte "creator"
+app_global_get
+app_global_put
+b main_l12
+main_l15:
+byte "whose_turn"
+byte "guest"
+app_global_get
+app_global_put
+b main_l12
+main_l16:
+byte "NW"
+app_global_get
+byte "X"
+==
+byte "W"
+app_global_get
+byte "X"
+==
+&&
+byte "SW"
+app_global_get
+byte "X"
+==
+&&
+byte "N"
+app_global_get
+byte "X"
+==
+byte "C"
+app_global_get
+byte "X"
+==
+&&
+byte "S"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "NE"
+app_global_get
+byte "X"
+==
+byte "E"
+app_global_get
+byte "X"
+==
+&&
+byte "SE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "NW"
+app_global_get
+byte "X"
+==
+byte "N"
+app_global_get
+byte "X"
+==
+&&
+byte "NE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "W"
+app_global_get
+byte "X"
+==
+byte "C"
+app_global_get
+byte "X"
+==
+&&
+byte "E"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "SW"
+app_global_get
+byte "X"
+==
+byte "S"
+app_global_get
+byte "X"
+==
+&&
+byte "SE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "NW"
+app_global_get
+byte "X"
+==
+byte "C"
+app_global_get
+byte "X"
+==
+&&
+byte "SE"
+app_global_get
+byte "X"
+==
+&&
+||
+byte "SW"
+app_global_get
+byte "X"
+==
+byte "S"
+app_global_get
+byte "X"
+==
+&&
+byte "NE"
+app_global_get
+byte "X"
+==
+&&
+||
+bnz main_l18
+byte "winner"
+byte "creator"
+app_global_get
+app_global_put
+b main_l12
+main_l18:
+byte "winner"
+byte "guest"
+app_global_get
+app_global_put
+b main_l12
+main_l19:
+txna ApplicationArgs 0
+byte "X"
+app_global_put
+b main_l9
+main_l20:
+int 1
+return
+main_l21:
+int 0
+return
+main_l22:
+int 0
+return
+main_l23:
+int 0
+return
+main_l24:
+byte "creator"
+txn Sender
+app_global_put
+byte "guest"
+txna ApplicationArgs 0
+app_global_put
+byte "whose_turn"
+txna ApplicationArgs 0
+app_global_put
+byte "N"
+byte "empty"
+app_global_put
+byte "E"
+byte "empty"
+app_global_put
+byte "S"
+byte "empty"
+app_global_put
+byte "W"
+byte "empty"
+app_global_put
+byte "NE"
+byte "empty"
+app_global_put
+byte "SE"
+byte "empty"
+app_global_put
+byte "SW"
+byte "empty"
+app_global_put
+byte "NW"
+byte "empty"
+app_global_put
+byte "C"
+byte "empty"
+app_global_put
+byte "winner"
+byte "pending"
+app_global_put
+int 1
+return

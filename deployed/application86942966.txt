@@ -1,0 +1,90 @@
+TXID: 3RHS26JZGROQHUMZYDO4LZSFNOQXO7SVXEOVQXSISWJK6YJAIW5Q
+Result confirmed in round: 21308974
+app-id: 86942966
+
+Global state
+C: empty
+E: empty
+N: empty
+NE: empty
+NW: empty
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+S: empty
+whose_turn: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+Winner: pending
+SE: empty
+SW: empty
+W: empty
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+TXID: MIARGMAFH5LOCX2CDPNK55VY5RI3M42NXC2H6UNYVKRWEHP2NLOA
+Result confirmed in round: 21308982
+app-id: 86942966
+
+Global state
+C: empty
+N: empty
+W: empty
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+NW: empty
+NE: empty
+S: empty
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+E: X
+Winner: pending
+SE: empty
+SW: empty
+whose_turn: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+TXID: PJOCNOKSLGVBRP4DMCNSNJNULUXOXK53PJSYDZCH5BB6OZA3QIJQ
+Result confirmed in round: 21308987
+app-id: 86942966
+
+Global state
+E: X
+NE: empty
+NW: empty
+S: empty
+C: empty
+SE: empty
+SW: empty
+W: empty
+whose_turn: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+N: O
+Winner: pending
+TXID: B7OJMLJWO7L4Q3WZSL4ICSBUJLUTD4DBOECM3W7GBPBZDIPPSQWQ
+Result confirmed in round: 21308993
+app-id: 86942966
+
+Global state
+SE: empty
+NW: empty
+C: X
+NE: empty
+N: O
+E: X
+S: empty
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+W: empty
+whose_turn: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+Winner: pending
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+SW: empty
+TXID: GTXHPS4UWT3GO4RAL4MANX2FQVDJVRR6TJPJ3ZOE26IGWQYA72OQ
+Result confirmed in round: 21308998
+app-id: 86942966
+
+Global state
+N: O
+S: empty
+SE: empty
+C: X
+NE: empty
+NW: empty
+E: X
+SW: O
+guest: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=
+W: empty
+creator: 42r5mmmCxGb+Ban5YWQTLcno3Mj0MwxMXRvt0XHdDQQ=
+Winner: pending
+whose_turn: lPqmIu98JlYFGAoxSr342FFsgeGcTUGM9gm1YvH8C7w=

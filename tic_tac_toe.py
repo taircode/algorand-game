@@ -20,7 +20,7 @@ def play_tic_tac_toe():
         App.globalPut(Bytes("SW"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("NW"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("C"), Bytes("empty")), # write a byte slice
-        App.globalPut(Bytes("Winner"), Bytes("pending")), # write a byte slice
+        App.globalPut(Bytes("winner"), Bytes("pending")), # write a byte slice
         Return(Int(1)) # Could also be Approve()
     )
 
