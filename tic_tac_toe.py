@@ -25,9 +25,19 @@ def play_tic_tac_toe():
         Return(Int(1)) # Could also be Approve()
     )
 
+    #no local states so don't need this
     handle_optin = Return(Int(0)) # Could also be Reject()
 
-    handle_closeout = Return(Int(0)) # Could also be Reject()
+    handle_closeout = Seq(
+        InnerTxnBuilder.Begin(),
+        InnerTxnBuilder.SetFields({
+            TxnField.type_enum: TxnType.Payment,
+            TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
+            TxnField.receiver: App.globalGet(Bytes("creator")) 
+        }),
+        InnerTxnBuilder.Submit(),
+        Return(Int(1))
+        )
 
     handle_updateapp = Return(Int(0)) # Could also be Reject()
 
@@ -36,21 +46,29 @@ def play_tic_tac_toe():
     flip_whose_turn = If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("creator")),App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("guest"))),App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("creator"))))
 
     #return an even split of the money
-    no_winner = Seq(
+    no_winner = Seq(        
+        App.globalPut(Bytes("winner"),Bytes("tie")),
+        #payback the guest
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
             TxnField.type_enum: TxnType.Payment,
             TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
             TxnField.receiver: App.globalGet(Bytes("guest")) 
         }),
-        InnerTxnBuilder.Next(),
-        InnerTxnBuilder.SetFields({
-            TxnField.type_enum: TxnType.Payment,
-            TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
-            TxnField.receiver: App.globalGet(Bytes("creator")) #Not sure why Global.creator_address() didn't work here
-        }),
-        InnerTxnBuilder.Submit(),
-        App.globalPut(Bytes("winner"),Bytes("tie"))
+        InnerTxnBuilder.Submit()
+        #currently sending to the creator address doesn't work for some reason
+        #getting this error:
+        # logic eval error: invalid Account reference 4NVPTGTJQLCGN7QFVH4WCZATFXE6RXGI6QZQYTC5DPW5C4O5BUCEGTC3BA. 
+        # Details: pc=589, opcodes=bytec 14 // "creator" app_global_get itxn_field Receiver
+        #ANSWER: all addresses in inner transactions have to be part of the foreign accounts array!
+        #https://forum.algorand.org/t/escrow-transaction/5030
+        #InnerTxnBuilder.Next(),
+        #InnerTxnBuilder.SetFields({
+        #    TxnField.type_enum: TxnType.Payment,
+        #    TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
+        #    TxnField.receiver: App.globalGet(Bytes("creator")) #Not sure why Global.creator_address() didn't work here
+        #}),
+        #InnerTxnBuilder.Submit(),
     )
     #clear board to play again -or- just delete?
 
@@ -156,13 +174,13 @@ def play_tic_tac_toe():
 
 def get_approval_program():
     program = play_tic_tac_toe()
-    return compileTeal(program, mode=Mode.Application, version=5)
+    return compileTeal(program, mode=Mode.Application, version=6)
 
 def get_clear_state_program():
     program = Return(Int(1))
-    return compileTeal(program, Mode.Application, version=5)
+    return compileTeal(program, Mode.Application, version=6)
     
 if __name__ == "__main__":
     program = play_tic_tac_toe()
-    print(compileTeal(program, mode=Mode.Application, version=5))
+    print(compileTeal(program, mode=Mode.Application, version=6))
 

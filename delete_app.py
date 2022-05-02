@@ -73,7 +73,7 @@ if __name__=='__main__':
             for line in f:
                 pass
             app_id=int(line)
-    else:
+    elif args.app_id!='all':
         app_id=int(args.app_id)
 
     # initialize an algodClient
