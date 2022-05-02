@@ -102,7 +102,7 @@ def play_tic_tac_toe():
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
         TxnField.type_enum: TxnType.Payment,
-        TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(2)),
+        TxnField.amount: Mul(Mul(App.globalGet(Bytes("bet")),Int(2)),Int(10**6)),
         TxnField.receiver: Txn.sender() #only the sender could have won the game on the turn b/c we check board after each turn
         }),
         InnerTxnBuilder.Submit(),
