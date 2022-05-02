@@ -370,8 +370,25 @@ byte "empty"
 ==
 ||
 bnz main_l13
-int 1
-return
+itxn_begin
+int pay
+itxn_field TypeEnum
+byte "bet"
+app_global_get
+itxn_field Amount
+txn Sender
+itxn_field Receiver
+itxn_submit
+itxn_begin
+int pay
+itxn_field TypeEnum
+byte "bet"
+app_global_get
+itxn_field Amount
+byte "guest"
+app_global_get
+itxn_field Receiver
+itxn_submit
 main_l12:
 int 1
 return

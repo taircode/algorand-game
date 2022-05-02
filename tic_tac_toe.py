@@ -36,7 +36,22 @@ def play_tic_tac_toe():
     flip_whose_turn = If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("creator")),App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("guest"))),App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("creator"))))
 
     #return an even split of the money
-    no_winner = Return(Int(1))
+    no_winner = Seq(
+        InnerTxnBuilder.Begin(),
+        InnerTxnBuilder.SetFields({
+        TxnField.type_enum: TxnType.Payment,
+        TxnField.amount: App.globalGet(Bytes("bet")),
+        TxnField.receiver: Txn.sender() #only the sender could have won the game on the turn b/c we check board after each turn
+        }),
+        InnerTxnBuilder.Submit(),
+        InnerTxnBuilder.Begin(),
+        InnerTxnBuilder.SetFields({
+        TxnField.type_enum: TxnType.Payment,
+        TxnField.amount: App.globalGet(Bytes("bet")),
+        TxnField.receiver: App.globalGet(Bytes("guest")) #only the sender could have won the game on the turn b/c we check board after each turn
+        }),
+        InnerTxnBuilder.Submit(),
+    )
     #clear board to play again -or- just delete?
 
     #check to see if someone won
@@ -82,7 +97,6 @@ def play_tic_tac_toe():
         App.globalPut(Bytes("winner"),App.globalGet(Bytes("guest"))),
         App.globalPut(Bytes("winner"),App.globalGet(Bytes("creator")))
     )
-
 
     pay_winner=Seq(
         InnerTxnBuilder.Begin(),

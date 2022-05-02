@@ -62,29 +62,37 @@ def delete_app(client, private_key, app_id):
 
 if __name__=='__main__':
 
-    #parser = argparse
-    #parser.add_argument()
-    #parser.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--app_id",default="latest",help="provide an app_id, 'all' (delete all), or 'latest' (delete most recently deployed).")
+    args = parser.parse_args()
+
+    #get the app id from args or from file
+    if args.app_id=='latest':
+        with open("./all_deployed.txt","r") as f:
+            for line in f:
+                pass
+            app_id=int(line)
+    else:
+        app_id=int(args.app_id)
 
     # initialize an algodClient
     algod_client = v2client.algod.AlgodClient(algod_token, algod_address) #want v2client here or do from algosdk.v2client import algod
 
     # define private keys
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic)
+    
+    if args.app_id=='all':
+        info= algod_client.account_info(account.address_from_private_key(creator_private_key))
+        for app in info['created-apps']:
+            app_id=app['id']
+            print("--------------------------------------------")
+            print("Deleting Tic-Tac-Toe application with id "+str(app_id))
 
-    #app-id to be deleted
-    #app_id=86872612 #first one deployed
-    #app_id=86875673 #second one deployed
-    app_id=86875859 #third one deployed
+            # delete application
+            delete_app(algod_client, creator_private_key, app_id)
+    else:
+        print("--------------------------------------------")
+        print("Deleting Tic-Tac-Toe application with id "+str(app_id))
 
-    print("--------------------------------------------")
-    print("Deleting Tic-Tac-Toe application with id "+str(app_id))
-
-    # delete application
-    delete_app(algod_client, creator_private_key, app_id)
-
-    #print("--------------------------------------------")
-    #print("Reading global state of Tic-Tac-Toe application......")
-
-    # read global state of application
-    #print("Global state:", read_global_state(algod_client, app_id))
+        # delete application
+        delete_app(algod_client, creator_private_key, app_id)
