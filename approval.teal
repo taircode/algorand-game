@@ -378,7 +378,7 @@ app_global_get
 int 1000000
 *
 itxn_field Amount
-byte "creator"
+byte "guest"
 app_global_get
 itxn_field Receiver
 itxn_submit
@@ -390,7 +390,7 @@ app_global_get
 int 1000000
 *
 itxn_field Amount
-byte "guest"
+byte "creator"
 app_global_get
 itxn_field Receiver
 itxn_submit
