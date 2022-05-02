@@ -36,6 +36,12 @@ def play_tic_tac_toe():
     #what if this is Return(Int(0))? Can you just never delete the app then?
     handle_deleteapp =  Seq(
         InnerTxnBuilder.Begin(),
+        #InnerTxnBuilder.SetFields({
+        #    TxnField.type_enum: TxnType.Payment,
+        #    TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
+        #    TxnField.receiver: App.globalGet(Bytes("guest")) 
+        #}),
+        #InnerTxnBuilder.Next(),
         InnerTxnBuilder.SetFields({
             TxnField.type_enum: TxnType.Payment,
             TxnField.close_remainder_to: Global.creator_address() 
