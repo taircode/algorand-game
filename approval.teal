@@ -384,12 +384,6 @@ itxn_field Amount
 byte "guest"
 app_global_get
 itxn_field Receiver
-itxn_next
-int pay
-itxn_field TypeEnum
-global CreatorAddress
-itxn_field CloseRemainderTo
-itxn_submit
 main_l12:
 int 1
 return
@@ -589,20 +583,20 @@ main_l23:
 int 0
 return
 main_l24:
-int 0
+int 1
 return
 main_l25:
 byte "creator"
-txna ApplicationArgs 0
+txn Sender
 app_global_put
 byte "guest"
-txna ApplicationArgs 1
+txna ApplicationArgs 0
 app_global_put
 byte "whose_turn"
-txna ApplicationArgs 1
+txna ApplicationArgs 0
 app_global_put
 byte "bet"
-txna ApplicationArgs 2
+txna ApplicationArgs 1
 btoi
 app_global_put
 byte "N"

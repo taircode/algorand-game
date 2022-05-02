@@ -79,8 +79,30 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
         f.write("\n")
         f.write("app-id: "+str(app_id))
         f.write("\n")
-
     return app_id
+
+    #this is if you want guest to opt-in to the contract
+    #don't really need this
+    #guest_mnemonic="ill captain pluck horn reduce stadium logic such short empty install analyst again final ladder marine push ask clerk shrug toe zoo seat abstract fee"
+    #guest_private_key = get_private_key_from_mnemonic(guest_mnemonic)
+    #sender = account.address_from_private_key(guest_private_key)
+    #opt_txn = transaction.ApplicationOptInTxn(sender, params, app_id)
+
+    # sign transaction
+    #signed_opt_txn = opt_txn.sign(guest_private_key)
+    #opt_tx_id = signed_opt_txn.transaction.get_txid()
+
+    # send transaction
+    #client.send_transactions([signed_opt_txn])
+    # wait for confirmation
+    #try:
+    #    transaction_response = transaction.wait_for_confirmation(client, opt_tx_id, 4)
+    #    print("TXID: ", opt_tx_id)
+    #    print("Result confirmed in round: {}".format(transaction_response['confirmed-round']))
+
+    #except Exception as err:
+    #    print(err)
+    #    return
 
 # user declared account mnemonics
 #you should never save mnemonic like this in production. Just using on testnet for now.
@@ -143,4 +165,3 @@ if __name__=='__main__':
         f.write("Global state\n")
         lines=[str(item)+": "+str(val)+"\n" for item, val in global_state.items()]
         f.writelines(lines)
-    
