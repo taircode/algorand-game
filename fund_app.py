@@ -70,13 +70,14 @@ if __name__=="__main__":
     app_address=logic.get_application_address(app_id)
     print(f"app address is {app_address}")
 
-    _future_fee=10**3
+    _min_balance_fee=10**5
+    _transaction_fee=10**3
 
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic['creator'])
-    pmtx_creator = send_payment(algod_client, creator_private_key, algo_amount*(10**6)+_future_fee, app_address)
+    pmtx_creator = send_payment(algod_client, creator_private_key, algo_amount*(10**6)+_min_balance_fee, app_address)
 
     guest_private_key = get_private_key_from_mnemonic(creator_mnemonic['guest'])
-    pmtx_creator = send_payment(algod_client, guest_private_key, algo_amount*(10**6), app_address)
+    pmtx_creator = send_payment(algod_client, guest_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
 
 
     

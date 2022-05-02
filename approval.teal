@@ -375,8 +375,11 @@ int pay
 itxn_field TypeEnum
 byte "bet"
 app_global_get
+int 1000000
+*
 itxn_field Amount
-txn Sender
+byte "creator"
+app_global_get
 itxn_field Receiver
 itxn_submit
 itxn_begin
@@ -384,11 +387,16 @@ int pay
 itxn_field TypeEnum
 byte "bet"
 app_global_get
+int 1000000
+*
 itxn_field Amount
 byte "guest"
 app_global_get
 itxn_field Receiver
 itxn_submit
+byte "winner"
+byte "tie"
+app_global_put
 main_l12:
 int 1
 return
