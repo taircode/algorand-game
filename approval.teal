@@ -382,6 +382,18 @@ byte "guest"
 app_global_get
 itxn_field Receiver
 itxn_submit
+itxn_begin
+int pay
+itxn_field TypeEnum
+byte "bet"
+app_global_get
+int 1000000
+*
+itxn_field Amount
+byte "creator"
+app_global_get
+itxn_field Receiver
+itxn_submit
 byte "winner"
 byte "tie"
 app_global_put
@@ -571,16 +583,16 @@ int 0
 return
 main_l25:
 byte "creator"
-txn Sender
+txna ApplicationArgs 0
 app_global_put
 byte "guest"
-txna ApplicationArgs 0
+txna ApplicationArgs 1
 app_global_put
 byte "whose_turn"
-txna ApplicationArgs 0
+txna ApplicationArgs 1
 app_global_put
 byte "bet"
-txna ApplicationArgs 1
+txna ApplicationArgs 2
 btoi
 app_global_put
 byte "N"

@@ -43,7 +43,7 @@ def play_tic_tac_toe():
             TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
             TxnField.receiver: App.globalGet(Bytes("guest")) 
         }),
-        InnerTxnBuilder.Submit(),
+        InnerTxnBuilder.Next(),
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
             TxnField.type_enum: TxnType.Payment,
