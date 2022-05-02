@@ -7,9 +7,9 @@ Later add functionality for a wager -or- receiving an NFT stating that winner wo
 def play_tic_tac_toe():
 
     handle_creation = Seq(
-        App.globalPut(Bytes("creator"), Txn.sender()), #creator will be O's #this is already stored for you in Global.creator_address
+        App.globalPut(Bytes("creator"), Txn.sender()), #creator will be O's in tic-tac-toe
         #guest is hard-coded for now. Add a feature for the creator to set who they want to challenge
-        App.globalPut(Bytes("guest"), Txn.application_args[0]), #invited_guest will be X's
+        App.globalPut(Bytes("guest"), Txn.application_args[0]), #invited_guest will be X's in tic-tac-toe
         App.globalPut(Bytes("whose_turn"), Txn.application_args[0]), #invited_guest will go first #the guest starts first
         App.globalPut(Bytes("bet"),Btoi(Txn.application_args[1])),
         App.globalPut(Bytes("N"), Bytes("empty")), # write a byte slice
@@ -39,16 +39,16 @@ def play_tic_tac_toe():
     no_winner = Seq(
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
-        TxnField.type_enum: TxnType.Payment,
-        TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
-        TxnField.receiver: App.globalGet(Bytes("creator")) #only the sender could have won the game on the turn b/c we check board after each turn
+            TxnField.type_enum: TxnType.Payment,
+            TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
+            TxnField.receiver: App.globalGet(Bytes("guest")) 
         }),
         InnerTxnBuilder.Submit(),
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
-        TxnField.type_enum: TxnType.Payment,
-        TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
-        TxnField.receiver: App.globalGet(Bytes("guest")) #only the sender could have won the game on the turn b/c we check board after each turn
+            TxnField.type_enum: TxnType.Payment,
+            TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
+            TxnField.receiver: App.globalGet(Bytes("creator")) 
         }),
         InnerTxnBuilder.Submit(),
         App.globalPut(Bytes("winner"),Bytes("tie"))
@@ -102,9 +102,9 @@ def play_tic_tac_toe():
     pay_winner=Seq(
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
-        TxnField.type_enum: TxnType.Payment,
-        TxnField.amount: Mul(Mul(App.globalGet(Bytes("bet")),Int(2)),Int(10**6)),
-        TxnField.receiver: Txn.sender() #only the sender could have won the game on the turn b/c we check board after each turn
+            TxnField.type_enum: TxnType.Payment,
+            TxnField.amount: Mul(Mul(App.globalGet(Bytes("bet")),Int(2)),Int(10**6)),
+            TxnField.receiver: Txn.sender() #only the sender could have won the game on the turn b/c we check board after each turn
         }),
         InnerTxnBuilder.Submit(),
     )
