@@ -67,6 +67,7 @@ if __name__=='__main__':
     args = parser.parse_args()
 
     #get the app id from args or from file
+    #getting most recent deployed app from your local file. Should probably read this info from the blockchain.
     if args.app_id=='latest':
         with open("./all_deployed.txt","r") as f:
             for line in f:
@@ -80,7 +81,7 @@ if __name__=='__main__':
 
     # define private keys
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic)
-    
+
     if args.app_id=='all':
         info= algod_client.account_info(account.address_from_private_key(creator_private_key))
         for app in info['created-apps']:
