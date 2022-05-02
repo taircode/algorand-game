@@ -18,7 +18,7 @@ def format_state(state):
             # byte string
             if formatted_key=='winner':
                 decoded_bytes = base64.b64decode(value['bytes'])
-                if decoded_bytes==b'pending':
+                if decoded_bytes==b'pending' or decoded_bytes==b'tie':
                     formatted_value=decoded_bytes.decode('utf-8')
                 else:
                     #formatted_value is a decoded algorand pk address
