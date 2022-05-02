@@ -7,11 +7,11 @@ Later add functionality for a wager -or- receiving an NFT stating that winner wo
 def play_tic_tac_toe():
 
     handle_creation = Seq(
-        App.globalPut(Bytes("creator"), Txn.sender()), #creator will be O's in tic-tac-toe
+        App.globalPut(Bytes("creator"), Txn.application_args[0]), #creator will be O's in tic-tac-toe #using Txn.sender() gives me issues in inner transaction payment
         #guest is hard-coded for now. Add a feature for the creator to set who they want to challenge
-        App.globalPut(Bytes("guest"), Txn.application_args[0]), #invited_guest will be X's in tic-tac-toe
-        App.globalPut(Bytes("whose_turn"), Txn.application_args[0]), #invited_guest will go first #the guest starts first
-        App.globalPut(Bytes("bet"),Btoi(Txn.application_args[1])),
+        App.globalPut(Bytes("guest"), Txn.application_args[1]), #invited_guest will be X's in tic-tac-toe
+        App.globalPut(Bytes("whose_turn"), Txn.application_args[1]), #invited_guest will go first #the guest starts first
+        App.globalPut(Bytes("bet"),Btoi(Txn.application_args[2])),
         App.globalPut(Bytes("N"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("E"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("S"), Bytes("empty")), # write a byte slice
@@ -44,13 +44,13 @@ def play_tic_tac_toe():
             TxnField.receiver: App.globalGet(Bytes("guest")) 
         }),
         InnerTxnBuilder.Submit(),
-        #InnerTxnBuilder.Begin(),
-        #InnerTxnBuilder.SetFields({
-        #    TxnField.type_enum: TxnType.Payment,
-        #    TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
-        #    TxnField.receiver: Global.creator_address()
-        #}),
-        #InnerTxnBuilder.Submit(),
+        InnerTxnBuilder.Begin(),
+        InnerTxnBuilder.SetFields({
+            TxnField.type_enum: TxnType.Payment,
+            TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
+            TxnField.receiver: App.globalGet(Bytes("creator")) #Not sure why Global.creator_address() didn't work here
+        }),
+        InnerTxnBuilder.Submit(),
         App.globalPut(Bytes("winner"),Bytes("tie"))
     )
     #clear board to play again -or- just delete?
