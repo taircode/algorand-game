@@ -7,11 +7,11 @@ Later add functionality for a wager -or- receiving an NFT stating that winner wo
 def play_tic_tac_toe():
 
     handle_creation = Seq(
-        App.globalPut(Bytes("creator"), Txn.application_args[0]), #creator will be O's in tic-tac-toe #using Txn.sender() gives me issues in inner transaction payment
+        App.globalPut(Bytes("creator"), Txn.sender()), #creator will be O's in tic-tac-toe
         #guest is hard-coded for now. Add a feature for the creator to set who they want to challenge
-        App.globalPut(Bytes("guest"), Txn.application_args[1]), #invited_guest will be X's in tic-tac-toe
-        App.globalPut(Bytes("whose_turn"), Txn.application_args[1]), #invited_guest will go first #the guest starts first
-        App.globalPut(Bytes("bet"),Btoi(Txn.application_args[2])),
+        App.globalPut(Bytes("guest"), Txn.application_args[0]), #invited_guest will be X's in tic-tac-toe
+        App.globalPut(Bytes("whose_turn"), Txn.application_args[0]), #invited_guest will go first #the guest starts first
+        App.globalPut(Bytes("bet"),Btoi(Txn.application_args[1])),
         App.globalPut(Bytes("N"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("E"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("S"), Bytes("empty")), # write a byte slice
@@ -28,22 +28,27 @@ def play_tic_tac_toe():
     #no local states so don't need this
     handle_optin = Return(Int(0)) # Could also be Reject()
 
-    handle_closeout = Seq(
-        InnerTxnBuilder.Begin(),
-        InnerTxnBuilder.SetFields({
-            TxnField.type_enum: TxnType.Payment,
-            TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
-            TxnField.receiver: App.globalGet(Bytes("creator")) 
-        }),
-        InnerTxnBuilder.Submit(),
-        Return(Int(1))
-        )
+    #no local states so nothing for a user to close-out
+    handle_closeout = Return(Int(0)) # Could also be Reject()
 
     handle_updateapp = Return(Int(0)) # Could also be Reject()
 
-    handle_deleteapp = Return(Int(1)) #what if this is 0? can you just never delete the app then?
+    #what if this is Return(Int(0))? Can you just never delete the app then?
+    handle_deleteapp =  Seq(
+        InnerTxnBuilder.Begin(),
+        InnerTxnBuilder.SetFields({
+            TxnField.type_enum: TxnType.Payment,
+            TxnField.close_remainder_to: Global.creator_address() 
+        }),
+        InnerTxnBuilder.Submit(),
+        Return(Int(1))
+    )
 
-    flip_whose_turn = If(App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("creator")),App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("guest"))),App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("creator"))))
+    flip_whose_turn = If(
+            App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("creator")),
+            App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("guest"))),
+            App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("creator")))
+        )
 
     #return an even split of the money
     no_winner = Seq(        
@@ -55,7 +60,11 @@ def play_tic_tac_toe():
             TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
             TxnField.receiver: App.globalGet(Bytes("guest")) 
         }),
-        InnerTxnBuilder.Submit()
+        #I think account needs to opt-in in order to have an inner transaction - you're not allowing them to opt-in
+        #it just so happens that "guest" always makes the first move so also always makes the last move in a tie
+        #and transaction sender is always in the accounts array at positions accounts[0], so appears in the list
+
+        #InnerTxnBuilder.Submit(),
         #currently sending to the creator address doesn't work for some reason
         #getting this error:
         # logic eval error: invalid Account reference 4NVPTGTJQLCGN7QFVH4WCZATFXE6RXGI6QZQYTC5DPW5C4O5BUCEGTC3BA. 
@@ -65,8 +74,7 @@ def play_tic_tac_toe():
         #InnerTxnBuilder.Next(),
         #InnerTxnBuilder.SetFields({
         #    TxnField.type_enum: TxnType.Payment,
-        #    TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
-        #    TxnField.receiver: App.globalGet(Bytes("creator")) #Not sure why Global.creator_address() didn't work here
+        #    TxnField.close_remainder_to: Global.creator_address()
         #}),
         #InnerTxnBuilder.Submit(),
     )

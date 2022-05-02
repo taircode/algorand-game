@@ -370,6 +370,9 @@ byte "empty"
 ==
 ||
 bnz main_l13
+byte "winner"
+byte "tie"
+app_global_put
 itxn_begin
 int pay
 itxn_field TypeEnum
@@ -384,18 +387,9 @@ itxn_field Receiver
 itxn_next
 int pay
 itxn_field TypeEnum
-byte "bet"
-app_global_get
-int 1000000
-*
-itxn_field Amount
-byte "creator"
-app_global_get
-itxn_field Receiver
+global CreatorAddress
+itxn_field CloseRemainderTo
 itxn_submit
-byte "winner"
-byte "tie"
-app_global_put
 main_l12:
 int 1
 return
@@ -569,6 +563,23 @@ byte "X"
 app_global_put
 b main_l9
 main_l21:
+itxn_begin
+int pay
+itxn_field TypeEnum
+byte "bet"
+app_global_get
+int 1000000
+*
+itxn_field Amount
+byte "guest"
+app_global_get
+itxn_field Receiver
+itxn_next
+int pay
+itxn_field TypeEnum
+global CreatorAddress
+itxn_field CloseRemainderTo
+itxn_submit
 int 1
 return
 main_l22:
