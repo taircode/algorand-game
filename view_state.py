@@ -85,7 +85,7 @@ if __name__=="__main__":
     )
 
     for key, val in global_state.items():
-        if key not in ['whose_turn','creator','guest','winner']:
+        if key not in ['whose_turn','creator','guest','winner','bet']:
             if val!='empty':
                 if val=='X':
                     #draw an X at location key

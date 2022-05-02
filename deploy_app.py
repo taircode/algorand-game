@@ -1,5 +1,5 @@
 from pyteal import *
-from algosdk import account, v2client, mnemonic
+from algosdk import account, v2client
 from algosdk.future import transaction #note want algosdk.future.transaction not algosdk.transaction - incorrectly thought it was the second one 
 import tic_tac_toe
 import base64
