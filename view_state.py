@@ -45,8 +45,16 @@ if __name__=="__main__":
     guest = Text(Point(win.getWidth()/2, 515), 'X: Guest is '+guest_address)
     guest.draw(win)
 
+    bet_size=global_state['bet']
+    pot_size=bet_size*2
+    bet_text=Text(Point(500,100), 'Pot size: '+str(pot_size)+" Algos")
+    bet_text.draw(win)
+
     winner=global_state['winner']
-    winner_text=Text(Point(win.getWidth()/2, 410), 'The winner is '+winner)
+    if winner=='tie':
+        winner_text=Text(Point(win.getWidth()/2, 410), 'The game ended in a tie.')
+    else:
+        winner_text=Text(Point(win.getWidth()/2, 410), 'The winner is '+winner)
     winner_text.draw(win)
 
     if winner=='pending':

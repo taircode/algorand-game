@@ -543,6 +543,8 @@ byte "bet"
 app_global_get
 int 2
 *
+int 1000000
+*
 itxn_field Amount
 txn Sender
 itxn_field Receiver

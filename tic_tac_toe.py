@@ -40,17 +40,18 @@ def play_tic_tac_toe():
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
         TxnField.type_enum: TxnType.Payment,
-        TxnField.amount: App.globalGet(Bytes("bet")),
-        TxnField.receiver: Txn.sender() #only the sender could have won the game on the turn b/c we check board after each turn
+        TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
+        TxnField.receiver: App.globalGet(Bytes("creator")) #only the sender could have won the game on the turn b/c we check board after each turn
         }),
         InnerTxnBuilder.Submit(),
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
         TxnField.type_enum: TxnType.Payment,
-        TxnField.amount: App.globalGet(Bytes("bet")),
+        TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
         TxnField.receiver: App.globalGet(Bytes("guest")) #only the sender could have won the game on the turn b/c we check board after each turn
         }),
         InnerTxnBuilder.Submit(),
+        App.globalPut(Bytes("winner"),Bytes("tie"))
     )
     #clear board to play again -or- just delete?
 
