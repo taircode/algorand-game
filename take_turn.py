@@ -20,11 +20,14 @@ def take_turn(client, private_key, app_id, location):
     #the only argument we need is the location of your move
     app_args=[location]
 
+    #you need to pass the address that is not the transaction sender
+    accounts=[other_address]
+
     #which app are you playing on
     index=app_id
 
     # create unsigned transaction
-    txn = transaction.ApplicationNoOpTxn(sender, params, index, app_args)
+    txn = transaction.ApplicationNoOpTxn(sender, params, index, app_args, accounts)
 
     # sign transaction
     signed_txn = txn.sign(private_key)
@@ -97,11 +100,15 @@ if __name__=='__main__':
     # define private keys
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic[args.whose_turn])
 
+    #get the addresses of the account who is not sending the current transaction
+    other_private_key = get_private_key_from_mnemonic(creator_mnemonic['guest']) if args.whose_turn == 'creator' else get_private_key_from_mnemonic(creator_mnemonic['creator'])
+    other_address = account.address_from_private_key(other_private_key)
+
     print("--------------------------------------------")
     print("Take a turn in Tic-Tac-Toe application......")
 
     # create new application
-    take_turn(algod_client, creator_private_key, app_id, args.location)
+    take_turn(algod_client, creator_private_key, app_id, args.location, other_address)
 
     # read global state of application
     global_state=read_global_state(algod_client, app_id)

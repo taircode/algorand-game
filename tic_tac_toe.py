@@ -34,7 +34,10 @@ def play_tic_tac_toe():
     handle_updateapp = Return(Int(0)) # Could also be Reject()
 
     #what if this is Return(Int(0))? Can you just never delete the app then?
-    handle_deleteapp =  Seq(
+    handle_deleteapp =  Return(Int(1))
+    
+    """ handle_deleteapp better
+    Seq(
         InnerTxnBuilder.Begin(),
         #InnerTxnBuilder.SetFields({
         #    TxnField.type_enum: TxnType.Payment,
@@ -49,6 +52,7 @@ def play_tic_tac_toe():
         InnerTxnBuilder.Submit(),
         Return(Int(1))
     )
+    """
 
     flip_whose_turn = If(
             App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("creator")),
@@ -66,23 +70,14 @@ def play_tic_tac_toe():
             TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
             TxnField.receiver: App.globalGet(Bytes("guest")) 
         }),
-        #I think account needs to opt-in in order to have an inner transaction - you're not allowing them to opt-in
-        #it just so happens that "guest" always makes the first move so also always makes the last move in a tie
-        #and transaction sender is always in the accounts array at positions accounts[0], so appears in the list
-
-        #InnerTxnBuilder.Submit(),
-        #currently sending to the creator address doesn't work for some reason
-        #getting this error:
-        # logic eval error: invalid Account reference 4NVPTGTJQLCGN7QFVH4WCZATFXE6RXGI6QZQYTC5DPW5C4O5BUCEGTC3BA. 
-        # Details: pc=589, opcodes=bytec 14 // "creator" app_global_get itxn_field Receiver
-        #ANSWER: all addresses in inner transactions have to be part of the foreign accounts array!
+        #All addresses in inner transactions have to be part of the foreign accounts array!
         #https://forum.algorand.org/t/escrow-transaction/5030
-        #InnerTxnBuilder.Next(),
-        #InnerTxnBuilder.SetFields({
-        #    TxnField.type_enum: TxnType.Payment,
-        #    TxnField.close_remainder_to: Global.creator_address()
-        #}),
-        #InnerTxnBuilder.Submit(),
+        InnerTxnBuilder.Next(),
+        InnerTxnBuilder.SetFields({
+            TxnField.type_enum: TxnType.Payment,
+            TxnField.close_remainder_to: Global.creator_address()
+        }),
+        InnerTxnBuilder.Submit(),
     )
     #clear board to play again -or- just delete?
 
