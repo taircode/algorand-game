@@ -61,8 +61,6 @@ def play_tic_tac_toe():
         )
     )
     
-    Return(Int(0)) # Could also be Reject()
-
     #don't want to allow updates to the app
     handle_updateapp = Return(Int(0)) # Could also be Reject()
 
