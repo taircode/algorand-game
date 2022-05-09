@@ -7,6 +7,7 @@ from helper import get_private_key_from_mnemonic
 
 """
 This is the main function to call in order to close-out the smart contract
+Don't need close-out functionality yet, but maybe in the future
 """
 # create new application. This function creates the application creation transaction, signs, and sends it.
 def close_out_app(client, private_key, app_id):

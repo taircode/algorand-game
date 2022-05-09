@@ -39,8 +39,8 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
     encoded_bet_amount=(bet_amount).to_bytes(8,'big')
 
     #you have to decode the address to get the pk
-    #algorand applications store "addresses" as pk's like this one
     guest_address="ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI"
+    #algorand applications store "addresses" as pk's like this one
     guest_pk = decode_address(guest_address)
     #creator_address="4NVPTGTJQLCGN7QFVH4WCZATFXE6RXGI6QZQYTC5DPW5C4O5BUCEGTC3BA" #don't need to explicitly pass creator_address
     #creator_pk = decode_address(creator_address)

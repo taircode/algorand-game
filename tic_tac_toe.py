@@ -8,8 +8,8 @@ def play_tic_tac_toe():
 
     handle_creation = Seq(
         App.globalPut(Bytes("creator"), Txn.sender()), #creator will be O's in tic-tac-toe
-        App.globalPut(Bytes("guest"), Txn.application_args[0]), #invited_guest will be X's in tic-tac-toe
-        App.globalPut(Bytes("whose_turn"), Txn.application_args[0]), #invited_guest will go first #the guest starts first
+        App.globalPut(Bytes("guest"), Txn.application_args[0]), #guest will be X's in tic-tac-toe
+        App.globalPut(Bytes("whose_turn"), Txn.application_args[0]), #guest goes first
         App.globalPut(Bytes("bet"),Btoi(Txn.application_args[1])),
         App.globalPut(Bytes("N"), Bytes("empty")), # write a byte slice
         App.globalPut(Bytes("E"), Bytes("empty")), # write a byte slice
