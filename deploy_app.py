@@ -124,7 +124,7 @@ if __name__=='__main__':
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic)
 
     # declare application state storage (immutable)
-    local_ints = 0
+    local_ints = 1
     local_bytes = 0
     global_ints = 1 #had to change these to work for our tic-tac-toe example
     global_bytes = 13 #had to change these to work for our tic-tac-toe example

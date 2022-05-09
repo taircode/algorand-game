@@ -14,19 +14,33 @@ def send_payment(algod_client, private_key, amt, rcv):
 
     params = algod_client.suggested_params()
     
-    txn = transaction.PaymentTxn(sender, params, rcv, amt)
+    #this is the payment transaction
+    txn_1 = transaction.PaymentTxn(sender, params, rcv, amt)
+
+    #this is the app call transaction so that app knows to look for the payment
+    index=app_id
+    app_args=['pay']
+    txn_2 = transaction.ApplicationNoOpTxn(sender, params, index, app_args)
+
+    #group the transactions
+    gid = transaction.calculate_group_id([txn_1, txn_2])
+    txn_1.group = gid
+    txn_2.group = gid
 
     # sign transaction
-    signed_txn = txn.sign(private_key)
-    tx_id = signed_txn.transaction.get_txid()
+    signed_txn_1 = txn_1.sign(private_key)
+    signed_txn_2 = txn_2.sign(private_key)
+    signed_group =  [signed_txn_1, signed_txn_2]
+
+    #tx_id = signed_group.transaction.get_txid() #can you do this with a group?
 
     # send transaction
-    algod_client.send_transactions([signed_txn])
+    algod_client.send_transactions(signed_group)
 
     # wait for confirmation
     try:
-        pmtx = transaction.wait_for_confirmation(algod_client, tx_id, 5)
-        print("TXID: ", tx_id)
+        pmtx = transaction.wait_for_confirmation(algod_client, gid, 5)
+        print("TXID: ", gid)
         print("Result confirmed in round: {}".format(pmtx['confirmed-round']))
 
     except Exception as err:

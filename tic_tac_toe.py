@@ -24,17 +24,20 @@ def play_tic_tac_toe():
         Return(Int(1)) # Could also be Approve()
     )
 
-    #no local states so don't need this
-    handle_optin = Return(Int(0)) # Could also be Reject()
-
-    #no local states so nothing for a user to close-out
+    handle_optin = Seq(
+        Assert(Or(Txn.sender() == App.globalGet(Bytes("creator")), Txn.sender() == App.globalGet(Bytes("guest")))), #only allow the creator or guest to opt-in
+        App.localPut(Int(0),Bytes("amount"),Int(0)), #int(0) is the 0 spot in the accounts array, i.e. the sender
+        Return(Int(1))
+    )
+    
+    #implement
     handle_closeout = Return(Int(0)) # Could also be Reject()
 
+    #don't want to allow updates to the app
     handle_updateapp = Return(Int(0)) # Could also be Reject()
 
     #what if this is Return(Int(0))? Can you just never delete the app then?
     handle_deleteapp =  Return(Int(1))
-    
     """ handle_deleteapp better
     Seq(
         InnerTxnBuilder.Begin(),
@@ -134,7 +137,18 @@ def play_tic_tac_toe():
         InnerTxnBuilder.Submit(),
     )
 
-    handle_noop = Seq(
+    #_transaction_fee=Int(10**3) #add this in later
+    scratch = ScratchVar(TealType.uint64)
+
+    handle_pay = Seq(
+        Assert(Global.group_size() == Int(2)),
+        Assert(App.localGet(Int(0), Bytes("amount"))+Gtxn[0].amount()<=App.globalGet(Bytes("bet"))), #don't accept more than the bet amount #+ fee
+        scratch.store(App.localGet(Int(0),Bytes("amount"))), 
+        App.localPut(Int(0),Bytes("amount"), scratch.load() + Gtxn[0].amount()),
+        Return(Int(1))
+    )
+
+    handle_turn = Seq(
         Assert(Global.group_size() == Int(1)), #fail if transaction is grouped with any others
         Assert(App.globalGet(Bytes("whose_turn"))==Txn.sender()), #fail if transaction is sent by someone other than whose turn it is
         Assert(#fail if you provide something that is not a valid direction
@@ -169,6 +183,11 @@ def play_tic_tac_toe():
             ),flip_whose_turn,no_winner)
         ),
         Return(Int(1))
+    )
+
+    handle_noop = Seq(
+        If(Txn.application_args[0]==Bytes("pay"),handle_pay,handle_turn),
+        Return(Int(1)) #can get rid of this as long as the other two branches have a return
     )
 
     return Cond(
