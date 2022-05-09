@@ -6,6 +6,8 @@ Later add functionality for a wager -or- receiving an NFT stating that winner wo
 """
 def play_tic_tac_toe():
 
+    _transaction_fee=Int(10**3)
+
     handle_creation = Seq(
         App.globalPut(Bytes("creator"), Txn.sender()), #creator will be O's in tic-tac-toe
         App.globalPut(Bytes("guest"), Txn.application_args[0]), #guest will be X's in tic-tac-toe
@@ -69,7 +71,7 @@ def play_tic_tac_toe():
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
             TxnField.type_enum: TxnType.Payment,
-            TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
+            TxnField.amount: App.localGet(Bytes("guest"),Bytes("amount"))-_transaction_fee, #send back the amount that guest deposited (minus fee)
             TxnField.receiver: App.globalGet(Bytes("guest")) 
         }),
         #All addresses in inner transactions have to be part of the foreign accounts array!
@@ -137,7 +139,6 @@ def play_tic_tac_toe():
         InnerTxnBuilder.Submit(),
     )
 
-    _transaction_fee=Int(10**3)
     scratch_new_amount = ScratchVar(TealType.uint64)
     _bet_and_fee= ScratchVar(TealType.uint64)
 
