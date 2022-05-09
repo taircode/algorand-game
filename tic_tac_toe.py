@@ -8,7 +8,6 @@ def play_tic_tac_toe():
 
     handle_creation = Seq(
         App.globalPut(Bytes("creator"), Txn.sender()), #creator will be O's in tic-tac-toe
-        #guest is hard-coded for now. Add a feature for the creator to set who they want to challenge
         App.globalPut(Bytes("guest"), Txn.application_args[0]), #invited_guest will be X's in tic-tac-toe
         App.globalPut(Bytes("whose_turn"), Txn.application_args[0]), #invited_guest will go first #the guest starts first
         App.globalPut(Bytes("bet"),Btoi(Txn.application_args[1])),
