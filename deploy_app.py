@@ -32,7 +32,7 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
     params = client.suggested_params()
 
     #amount you want to bet
-    bet_amount=3
+    bet_amount=3*10**6 #sending in microalgos
     #Integers in algorand are almost always uint64, sometimes its required to encode them as bytes. 
     #For example when passing them as application arguments in an ApplicationCallTransaction. 
     #When encoding an integer to pass as an application argument, the integer should be encoded as the big endian 8 byte representation of the integer value.

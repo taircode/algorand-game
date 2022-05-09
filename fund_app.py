@@ -15,7 +15,7 @@ def send_payment(algod_client, private_key, amt, rcv):
     params = algod_client.suggested_params()
     
     #this is the payment transaction
-    txn_1 = transaction.PaymentTxn(sender, params, rcv, amt)
+    txn_1 = transaction.PaymentTxn(sender, params, rcv, int(amt))
 
     #this is the app call transaction so that app knows to look for the payment
     index=app_id
@@ -32,15 +32,27 @@ def send_payment(algod_client, private_key, amt, rcv):
     signed_txn_2 = txn_2.sign(private_key)
     signed_group =  [signed_txn_1, signed_txn_2]
 
-    #tx_id = signed_group.transaction.get_txid() #can you do this with a group?
+    tx_id_1 = signed_txn_1.transaction.get_txid() #can you do this with a group?
+    tx_id_2 = signed_txn_2.transaction.get_txid() #can you do this with a group?
+
 
     # send transaction
     algod_client.send_transactions(signed_group)
 
     # wait for confirmation
     try:
-        pmtx = transaction.wait_for_confirmation(algod_client, gid, 5)
-        print("TXID: ", gid)
+        pmtx = transaction.wait_for_confirmation(algod_client, tx_id_1, 5)
+        print("TXID: ", tx_id_1)
+        print("Result confirmed in round: {}".format(pmtx['confirmed-round']))
+
+    except Exception as err:
+        print(err)
+        return
+
+    # wait for confirmation
+    try:
+        pmtx = transaction.wait_for_confirmation(algod_client, tx_id_2, 5)
+        print("TXID: ", tx_id_2)
         print("Result confirmed in round: {}".format(pmtx['confirmed-round']))
 
     except Exception as err:
@@ -65,7 +77,7 @@ if __name__=="__main__":
     parser.add_argument("--algo_amount",default=3,help="specify how much algo you want to send.")
     args = parser.parse_args()
 
-    algo_amount=int(args.algo_amount)
+    algo_amount=float(args.algo_amount)
 
     #get the app id from args or from file
     if args.app_id=='latest':
@@ -88,10 +100,10 @@ if __name__=="__main__":
     _transaction_fee=10**3
 
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic['creator'])
-    pmtx_creator = send_payment(algod_client, creator_private_key, algo_amount*(10**6)+_min_balance_fee+_transaction_fee, app_address)
+    pmtx_creator = send_payment(algod_client, creator_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
 
     guest_private_key = get_private_key_from_mnemonic(creator_mnemonic['guest'])
-    pmtx_creator = send_payment(algod_client, guest_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
+    pmtx_guest = send_payment(algod_client, guest_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
 
 
     

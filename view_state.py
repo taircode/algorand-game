@@ -47,7 +47,7 @@ if __name__=="__main__":
 
     bet_size=global_state['bet']
     pot_size=bet_size*2
-    bet_text=Text(Point(500,100), 'Pot size: '+str(pot_size)+" Algos")
+    bet_text=Text(Point(500,100), 'Pot size: '+str(pot_size)+" MicroAlgos")
     bet_text.draw(win)
 
     winner=global_state['winner']

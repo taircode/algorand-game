@@ -38,6 +38,15 @@ app_global_get
 txn Sender
 ==
 assert
+int 0
+byte "amount"
+app_local_get
+byte "bet"
+app_global_get
+int 1000
++
+==
+assert
 txna ApplicationArgs 0
 byte "N"
 ==
@@ -578,19 +587,19 @@ byte "amount"
 app_local_get
 gtxn 0 Amount
 +
+store 0
 byte "bet"
 app_global_get
+int 1000
++
+store 1
+load 0
+load 1
 <=
 assert
 int 0
 byte "amount"
-app_local_get
-store 0
-int 0
-byte "amount"
 load 0
-gtxn 0 Amount
-+
 app_local_put
 int 1
 return

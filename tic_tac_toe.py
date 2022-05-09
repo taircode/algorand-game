@@ -137,21 +137,24 @@ def play_tic_tac_toe():
         InnerTxnBuilder.Submit(),
     )
 
-    #_transaction_fee=Int(10**3) #add this in later
-    scratch = ScratchVar(TealType.uint64)
+    _transaction_fee=Int(10**3)
+    scratch_new_amount = ScratchVar(TealType.uint64)
+    _bet_and_fee= ScratchVar(TealType.uint64)
 
     handle_pay = Seq(
         Assert(Global.group_size() == Int(2)),
-        Assert(App.localGet(Int(0), Bytes("amount"))+Gtxn[0].amount()<=App.globalGet(Bytes("bet"))), #don't accept more than the bet amount #+ fee
-        scratch.store(App.localGet(Int(0),Bytes("amount"))), 
-        App.localPut(Int(0),Bytes("amount"), scratch.load() + Gtxn[0].amount()),
+        scratch_new_amount.store(App.localGet(Int(0), Bytes("amount"))+Gtxn[0].amount()),
+        _bet_and_fee.store(App.globalGet(Bytes("bet"))+_transaction_fee),
+        Assert(scratch_new_amount.load()<=_bet_and_fee.load()), #don't accept more than the bet amount #+ fee
+        App.localPut(Int(0),Bytes("amount"), scratch_new_amount.load()),
         Return(Int(1))
     )
 
     handle_turn = Seq(
         Assert(Global.group_size() == Int(1)), #fail if transaction is grouped with any others
         Assert(App.globalGet(Bytes("whose_turn"))==Txn.sender()), #fail if transaction is sent by someone other than whose turn it is
-        Assert(#fail if you provide something that is not a valid direction
+        Assert(App.localGet(Int(0),Bytes("amount"))==(App.globalGet(Bytes("bet"))+_transaction_fee)),
+        Assert(#fail if you provide something that is not a valid location
             Or(
             Txn.application_args[0]==Bytes("N"),
             Txn.application_args[0]==Bytes("E"),
