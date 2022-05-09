@@ -32,31 +32,46 @@ def play_tic_tac_toe():
         Return(Int(1))
     )
     
-    #implement
-    handle_closeout = Return(Int(0)) # Could also be Reject()
+    handle_closeout = Seq(
+        If(And(#check to see if board is empty
+                App.globalGet(Bytes("N"))==Bytes("empty"),
+                App.globalGet(Bytes("E"))==Bytes("empty"),
+                App.globalGet(Bytes("S"))==Bytes("empty"),
+                App.globalGet(Bytes("W"))==Bytes("empty"),
+                App.globalGet(Bytes("NE"))==Bytes("empty"),
+                App.globalGet(Bytes("SE"))==Bytes("empty"),
+                App.globalGet(Bytes("SW"))==Bytes("empty"),
+                App.globalGet(Bytes("NW"))==Bytes("empty"),
+                App.globalGet(Bytes("C"))==Bytes("empty")
+            ),
+            Seq(#if the game hasn't started yet, either player can choose to close-out and get back the money they have sent thus far
+                InnerTxnBuilder.Begin(),
+                InnerTxnBuilder.SetFields({
+                    TxnField.type_enum: TxnType.Payment,
+                    TxnField.amount: App.localGet(Int(0),Bytes("amount"))-_transaction_fee, #send back the amount that guest deposited (minus fee)
+                    TxnField.receiver: Txn.sender()
+                }),
+                Return(Int(1))
+            )
+            ,
+            Seq(#if the game has ended, then the players should have gotten paid accordingly already, so just close out
+                Assert(App.globalget(Bytes("winner"))!=Bytes("pending")),
+                Return(Int(1))
+            )
+        )
+    )
+    
+    Return(Int(0)) # Could also be Reject()
 
     #don't want to allow updates to the app
     handle_updateapp = Return(Int(0)) # Could also be Reject()
 
     #what if this is Return(Int(0))? Can you just never delete the app then?
-    handle_deleteapp =  Return(Int(1))
-    """ handle_deleteapp better
-    Seq(
-        InnerTxnBuilder.Begin(),
-        #InnerTxnBuilder.SetFields({
-        #    TxnField.type_enum: TxnType.Payment,
-        #    TxnField.amount: Mul(App.globalGet(Bytes("bet")),Int(10**6)),
-        #    TxnField.receiver: App.globalGet(Bytes("guest")) 
-        #}),
-        #InnerTxnBuilder.Next(),
-        InnerTxnBuilder.SetFields({
-            TxnField.type_enum: TxnType.Payment,
-            TxnField.close_remainder_to: Global.creator_address() 
-        }),
-        InnerTxnBuilder.Submit(),
+    handle_deleteapp = Seq(
+        #leaving the assert line commented out for now for easier debugging/deleting
+        #Assert(App.globalGet(Bytes("winner"))!=Bytes("pending")) #don't allow deleting the app if the game is in progress!
         Return(Int(1))
     )
-    """
 
     flip_whose_turn = If(
             App.globalGet(Bytes("whose_turn"))==App.globalGet(Bytes("creator")),
