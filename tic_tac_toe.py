@@ -133,10 +133,9 @@ def play_tic_tac_toe():
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
             TxnField.type_enum: TxnType.Payment,
-            TxnField.amount: Mul(Mul(App.globalGet(Bytes("bet")),Int(2)),Int(10**6)),
-            TxnField.receiver: Txn.sender() #only the sender could have won the game on the turn b/c we check board after each turn
+            TxnField.close_remainder_to: Txn.sender()
         }),
-        InnerTxnBuilder.Submit(),
+        InnerTxnBuilder.Submit()
     )
 
     scratch_new_amount = ScratchVar(TealType.uint64)
