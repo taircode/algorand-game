@@ -74,6 +74,7 @@ algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--app_id",default="latest",help="provide an app_id, otherwise app_id of most recently deployed is used.")
+    parser.add_argument("--who",default="both",choices=['both','creator','guest'],help="provide an app_id, otherwise app_id of most recently deployed is used.")
     parser.add_argument("--algo_amount",default=3,help="specify how much algo you want to send.")
     args = parser.parse_args()
 
@@ -100,10 +101,16 @@ if __name__=="__main__":
     _transaction_fee=10**3
 
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic['creator'])
-    pmtx_creator = send_payment(algod_client, creator_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
-
     guest_private_key = get_private_key_from_mnemonic(creator_mnemonic['guest'])
-    pmtx_guest = send_payment(algod_client, guest_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
+
+    if args.who=='both':
+        pmtx_creator = send_payment(algod_client, creator_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
+        pmtx_guest = send_payment(algod_client, guest_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
+    elif args.who=='creator':
+        pmtx_creator = send_payment(algod_client, creator_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
+    elif args.who=='guest':
+        pmtx_guest = send_payment(algod_client, guest_private_key, algo_amount*(10**6)+_transaction_fee, app_address)
+
 
 
     

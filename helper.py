@@ -39,5 +39,9 @@ def format_state(state):
 def read_global_state(client, app_id):
     app = client.application_info(app_id)
     #app_params = app['params'] #what are all of the params?
+    #print(app_params)
     global_state = app['params']['global-state'] if "global-state" in app['params'] else []
     return format_state(global_state)
+
+def read_local_state(client, app_id):
+    pass

@@ -55,7 +55,7 @@ def play_tic_tac_toe():
             )
             ,
             Seq(#if the game has ended, then the players should have gotten paid accordingly already, so just close out
-                Assert(App.globalget(Bytes("winner"))!=Bytes("pending")),
+                Assert(App.globalGet(Bytes("winner"))!=Bytes("pending")),
                 Return(Int(1))
             )
         )
