@@ -77,7 +77,7 @@ def play_tic_tac_toe():
             App.globalPut(Bytes("whose_turn"), App.globalGet(Bytes("creator")))
         )
 
-    #return an even split of the money
+    #give back the players' money
     no_winner = Seq(        
         App.globalPut(Bytes("winner"),Bytes("tie")),
         #payback the guest
