@@ -10,7 +10,7 @@ from helper import get_private_key_from_mnemonic, read_global_state
 This is the main function to call in order to take a turn
 """
 # create new application. This function creates the application creation transaction, signs, and sends it.
-def take_turn(client, private_key, app_id, location):
+def take_turn(client, private_key, app_id, location, other_address):
     # define sender as creator
     sender = account.address_from_private_key(private_key)
 
