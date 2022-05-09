@@ -6,7 +6,7 @@ from helper import get_private_key_from_mnemonic
 
 
 """
-This is the main function to call in order to delete the smart contract
+This is the main function to call in order to close-out the smart contract
 """
 # create new application. This function creates the application creation transaction, signs, and sends it.
 def close_out_app(client, private_key, app_id):
@@ -57,9 +57,6 @@ if __name__=='__main__':
 
     # define private keys
     creator_private_key = get_private_key_from_mnemonic(creator_mnemonic)
-
-
-
 
     print("--------------------------------------------")
     print("Deploying Tic-Tac-Toe application......")
