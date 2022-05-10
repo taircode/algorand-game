@@ -166,7 +166,7 @@ def play_tic_tac_toe():
     handle_turn = Seq(
         Assert(Global.group_size() == Int(1)), #fail if transaction is grouped with any others
         Assert(App.globalGet(Bytes("whose_turn"))==Txn.sender()), #fail if transaction is sent by someone other than whose turn it is
-        Assert(App.localGet(Int(0),Bytes("amount"))==(App.globalGet(Bytes("bet"))+_transaction_fee)),
+        Assert(App.localGet(Int(0),Bytes("amount"))==(App.globalGet(Bytes("bet"))+_transaction_fee)), #fail if you haven't placed your bet yet
         Assert(#fail if you provide something that is not a valid location
             Or(
             Txn.application_args[0]==Bytes("N"),
