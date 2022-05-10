@@ -1,7 +1,9 @@
 
 from algosdk import v2client
-from helper import read_global_state
+from helper import read_global_state, read_local_state
+from algosdk.encoding import decode_address
 import argparse
+from algosdk import account
 from graphics import *
 
 if __name__=="__main__":
@@ -25,6 +27,10 @@ if __name__=="__main__":
     # Node must have EnableDeveloperAPI set to true in its config
     algod_address = "http://localhost:4001"
     algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    creator_mnemonic = {
+        "creator":"cushion raccoon snap tragic come seat rhythm canal clarify oven pipe misery maid mutual gossip real flat snake witness achieve concert wrestle praise abstract hundred",
+        "guest":"ill captain pluck horn reduce stadium logic such short empty install analyst again final ladder marine push ask clerk shrug toe zoo seat abstract fee"
+    }
 
     # initialize an algodClient
     algod_client = v2client.algod.AlgodClient(algod_token, algod_address)
@@ -49,6 +55,38 @@ if __name__=="__main__":
     pot_size=bet_size*2
     bet_text=Text(Point(500,100), 'Pot size: '+str(pot_size)+" MicroAlgos")
     bet_text.draw(win)
+
+    creator_address="4NVPTGTJQLCGN7QFVH4WCZATFXE6RXGI6QZQYTC5DPW5C4O5BUCEGTC3BA"
+    guest_address="ST5KMIXPPQTFMBIYBIYUVPPY3BIWZAPBTRGUDDHWBG2WF4P4BO6MXRVHGI"
+    
+    #creator_pk=decode_address(creator_address)
+    #guest_pk=decode_address(guest_address)
+
+    print("about to do read_local_state")
+    local_creator=read_local_state(algod_client, app_id, creator_address)
+
+    if 'amount' in local_creator:
+        creator_amount=local_creator['amount']
+        creator_sent_text=Text(Point(500,125), 'Creator sent: '+str(creator_amount)+" MicroAlgos")
+        creator_sent_text.draw(win)
+        if creator_amount<bet_size+10**3:
+            creator_request_text=Text(Point(480,140), 'Please send '+str(bet_size+10**3-creator_amount)+" more MicroAlgos")
+            creator_request_text.draw(win)
+    else:
+        creator_optin_text=Text(Point(500,125), 'Creator must opt-in to place bet.')
+        creator_optin_text.draw(win)
+
+    local_guest=read_local_state(algod_client, app_id, guest_address)
+    if 'amount' in local_guest:
+        guest_amount=local_guest['amount']
+        guest_sent_text=Text(Point(500,185), 'Guest sent: '+str(guest_amount)+" MicroAlgos")
+        guest_sent_text.draw(win)
+        if guest_amount<bet_size+10**3:
+            guest_request_text=Text(Point(480,200), 'Please send '+str(bet_size+10**3-guest_amount)+" more MicroAlgos")
+            guest_request_text.draw(win)
+    else:
+        guest_optin_text=Text(Point(500,185), 'Creator must opt-in to place bet.')
+        guest_optin_text.draw(win)
 
     winner=global_state['winner']
     if winner=='tie':

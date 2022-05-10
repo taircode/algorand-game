@@ -1,6 +1,9 @@
 from algosdk import mnemonic
 from algosdk.encoding import decode_address, encode_address
 import base64
+import json
+from algosdk.v2client import indexer
+
 
 # helper function that converts a mnemonic passphrase into a private signing key
 def get_private_key_from_mnemonic(mn) :
@@ -38,10 +41,27 @@ def format_state(state):
 # helper function to read app global state
 def read_global_state(client, app_id):
     app = client.application_info(app_id)
-    #app_params = app['params'] #what are all of the params?
-    #print(app_params)
+    app_params = app['params'] #what are all of the params?
+    print(app_params)
     global_state = app['params']['global-state'] if "global-state" in app['params'] else []
     return format_state(global_state)
 
-def read_local_state(client, app_id):
-    pass
+def format_local(pairs):
+    formatted={}
+    for item in pairs:
+        key=item['key']
+        formatted_key = base64.b64decode(key).decode('utf-8')
+        value=item['value']
+        if value['type']==2:#interger
+            formatted[formatted_key]=value['uint']
+        else: #we're not using non-ints yet, but add this later
+            pass
+    return formatted
+
+def read_local_state(client, app_id, address):
+    local_storage=client.account_application_info(address,app_id) #if address is not opted-in looks like this just returns same as application_info(client,app_id)
+    print(local_storage)
+    pairs=local_storage['app-local-state']['key-value'] if 'app-local-state' in local_storage else []
+    print("printing pairs")
+    print(pairs)
+    return format_local(pairs)
