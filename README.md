@@ -1,4 +1,4 @@
-# algo-game
+# algorand-game
 
 A simple tic-tac-toe game on the Algorand blockchain, implemented using PyTeal.
 
